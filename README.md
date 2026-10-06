@@ -23,13 +23,17 @@ isom5240-sephora-skin-advisor/
 ├── style.css               # UI theme (Sephora base: black / ivory / brand red)
 ├── data/
 │   ├── bridge_mapping.json # severity → ingredients → products (business-editable)
-│   └── style_openers.json  # recommendation openers (style × severity × variant)
+│   ├── style_openers.json  # recommendation openers (style × severity × variant)
+│   └── reviews_sample.csv  # sampled real reviews for the digest (8 products × 50)
 ├── models/
+│   ├── __init__.py         # package marker
 │   ├── vision.py           # ViT acne severity classification
 │   ├── review.py           # DistilBERT PRO/CON review classification
 │   └── generator.py        # recommendation text generation (with fallback)
 ├── ui/
-│   └── components.py       # severity bar, product card, Verified Buyer Digest, tone dropdown
+│   ├── __init__.py         # package marker
+│   ├── components.py       # severity bar, product card, Verified Buyer Digest, tone dropdown
+│   └── card.py             # Pillow summary card (downloadable PNG)
 ├── utils.py                # image helpers, mapping lookup, review batching
 ├── requirements.txt
 └── README.md
@@ -50,14 +54,14 @@ Replace `<HF_USERNAME>` in `config.py` after fine-tuning.
 
 | Pipeline | Base model | Task |
 |---|---|---|
-| Vision | `vit-acne-severity` | 4-class acne severity |
+| Vision | `jiefangziyou/vit-acne-severity` | 4-class acne severity |
 | Review | `distilbert-sephora-review-curator` | PRO/CON classification |
 | Generator | `distilgpt2-sephora-reco` | recommendation continuation |
 
 ## Data sources
 
 - **ACNE04** — acne severity (0–4 raw labels, consolidated to 4 classes), 70/15/15 stratified split.
-- **Kaggle "Sephora Products and Skincare Reviews"** — ~1M reviews, sampled a few thousand for fine-tuning.
+- **Kaggle "Sephora Products and Skincare Reviews"** — ~1M reviews (`sephora_reviews.csv`), sampled a few thousand for fine-tuning; `data/reviews_sample.csv` holds 400 runtime samples (8 recommended products × 50) with `verified_purchase=True`.
   <https://www.kaggle.com/datasets/nadyinky/sephora-products-and-skincare-reviews>
 
 ## Known gotchas (from the Image Storyteller IA build)
@@ -66,3 +70,4 @@ Replace `<HF_USERNAME>` in `config.py` after fine-tuning.
 - **torchvision is transitively imported** by the transformers image-processor registry (ZoeDepth chain) — keep `torchvision` in requirements, matching the `torch` version.
 - **Streamlit `st.selectbox` gained a `filter_mode` arg in 1.64** — pass `filter_mode=None` to disable type-to-filter on the tone dropdown.
 - **`st.rerun()` after a successful generation** — otherwise the result is written to `session_state` but the page doesn't refresh.
+- **`torch` must be the CPU wheel** — PyPI's default `torch` is the CUDA build, which drags in ~5GB of `nvidia-*-cu12` packages and fails on Streamlit Cloud's small memory (`installer returned non-zero exit code`). Pin the CPU wheel via direct URL (`download.pytorch.org/whl/cpu`, `cp312` = Python 3.12).

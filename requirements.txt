@@ -1,7 +1,9 @@
+# PyTorch CPU wheels (direct URL) — avoid pulling ~5GB of CUDA/nvidia deps on Streamlit Cloud
+# ⚠️ cp312 = Python 3.12. In Streamlit Cloud → Advanced settings → Python version = 3.12 (default)
+torch @ https://download.pytorch.org/whl/cpu/torch-2.3.1%2Bcpu-cp312-cp312-linux_x86_64.whl
+torchvision @ https://download.pytorch.org/whl/cpu/torchvision-0.18.1%2Bcpu-cp312-cp312-linux_x86_64.whl
 streamlit==1.36.0
 transformers==4.42.0
-torch==2.3.1
-torchvision==0.18.1
 Pillow==10.3.0
 pandas==2.2.2
 scikit-learn==1.5.0
