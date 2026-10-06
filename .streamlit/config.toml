@@ -1,0 +1,9 @@
+# Sephora 浅色主题 — 参照设计原稿v2.html 的调色板
+# ivory 象牙白底 + ink 近黑字 + Sephora 红 #C8102E + 金色点缀
+# base="light" 强制浅色，无视系统/浏览器深色偏好（之前页面被渲染成深色就是缺了这个）
+[theme]
+base = "light"
+primaryColor = "#C8102E"
+backgroundColor = "#FBF8F3"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#1A1512"
