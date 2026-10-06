@@ -90,7 +90,7 @@ def render_summary_card(
     for p in products:
         products_data.append({
             "brand": p.get("brand", "").upper(),
-            "name": p.get("name", ""),
+            "name_lines": _wrap(measure, p.get("name", ""), f_pname, body_w),
             "ing": " · ".join(p.get("ingredients", [])),
             "why_lines": _wrap(measure, p.get("why", ""), f_pmeta, body_w),
         })
@@ -101,7 +101,7 @@ def render_summary_card(
     if reco_lines:
         y += len(reco_lines) * 52 + 8
     for d in products_data:
-        y += 28 + 40 + 50 + 40 + len(d["why_lines"]) * 42 + 16
+        y += 28 + 40 + len(d["name_lines"]) * 50 + 40 + len(d["why_lines"]) * 42 + 16
     y += 24 + 36                                      # 免责分隔线 + 免责文字
     H = y + PAD
 
@@ -143,8 +143,9 @@ def render_summary_card(
         y += 28
         draw.text((PAD, y), d["brand"], fill=MUTED, font=f_pbrand)
         y += 40
-        draw.text((PAD, y), d["name"], fill=INK, font=f_pname)
-        y += 50
+        for line in d["name_lines"]:
+            draw.text((PAD, y), line, fill=INK, font=f_pname)
+            y += 50
         draw.text((PAD, y), d["ing"], fill=MUTED, font=f_pmeta)
         y += 40
         for line in d["why_lines"]:
