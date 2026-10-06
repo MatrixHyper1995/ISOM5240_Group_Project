@@ -1,0 +1,68 @@
+/* Sephora Skin Concern Advisor — 精简主题
+   参考 Image Storyteller 的 style.css 抽离经验：
+   全直角 + 无高光阴影 + 色弱友好（靠明暗/线条，不靠红绿）。 */
+
+/* 全直角 */
+[data-testid="stButton"] button,
+[data-testid="stSelectbox"] div,
+[data-testid="stFileUploader"] div {
+    border-radius: 0 !important;
+}
+
+/* 痘痘等级大字号（Georgia 衬线） */
+.result-label {
+    font-family: Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: bold;
+    letter-spacing: 0.02em;
+}
+.confidence { color: #777; font-size: 0.9rem; margin-bottom: 6px; }
+
+/* 单色分段条（明暗不靠色） */
+.severity-bar { display: flex; gap: 6px; margin: 8px 0 16px; }
+.bar-cell { width: 48px; height: 10px; background: #EDEDED; }
+.bar-cell.on { background: #2B2B2B; }
+
+/* 产品卡 */
+.product-card {
+    border: 1px solid #E5E0D8;
+    padding: 14px 16px;
+    margin: 10px 0;
+}
+.p-brand { color: #888; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.p-name  { font-weight: 600; margin: 4px 0; }
+.p-ing   { color: #555; font-size: 0.85rem; }
+.p-why   { color: #777; font-size: 0.85rem; margin-top: 6px; }
+
+/* Verified Buyer Digest（PRO+/CON− 不碰红绿） */
+.digest-head { font-weight: 600; margin-top: 16px; }
+.digest { padding: 6px 0; font-size: 0.9rem; }
+.digest.pro::before { content: "＋ "; font-weight: 700; }
+.digest.con::before { content: "－ "; font-weight: 700; }
+
+/* 推荐文案卡 */
+.reco-card {
+    border-left: 3px solid #2B2B2B;
+    padding: 12px 14px;
+    background: #FAF8F5;
+    margin: 10px 0;
+}
+
+/* 免责声明 */
+.disclaimer {
+    color: #999;
+    font-size: 0.8rem;
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #EEE;
+}
+
+/* 反馈感谢语（小字） */
+.feedback-thanks {
+    color: #999;
+    font-size: 0.85rem;
+    margin: 6px 0;
+}
+.feedback-thanks.center {
+    text-align: center;
+}

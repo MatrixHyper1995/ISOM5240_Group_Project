@@ -1,0 +1,26 @@
+{
+  "Gentle": {
+    "0": ["Your skin looks calm and clear — a gentle {ingredient} routine keeps it that way, because", "No breakout worries — {ingredient} is a soft way to maintain your skin, since"],
+    "1": ["For your mild breakout, a soft first step is {ingredient} — it's gentle because", "A gentle start for your mild breakout: {ingredient}, which helps by"],
+    "2": ["Your breakouts need a steady, kind approach — {ingredient} helps gently by", "Moderate breakouts deserve patient care — {ingredient} is a kind ally, because"],
+    "3": ["Please see a dermatologist first; as a gentle companion, {ingredient} can help by", "For severe breakouts, professional guidance matters most — {ingredient} supports gently by"]
+  },
+  "Professional": {
+    "0": ["Skin appears stable; {ingredient} supports barrier maintenance by", "No active concerns detected; {ingredient} helps preserve skin balance by"],
+    "1": ["For mild breakout concerns, {ingredient} is a well-established option; it works by", "Mild breakouts typically respond to {ingredient}, which acts by"],
+    "2": ["Moderate breakouts warrant {ingredient}, which acts by", "For moderate severity, {ingredient} is indicated; its mechanism is to"],
+    "3": ["Severe breakouts require professional care; {ingredient} may support treatment by", "Severe acne is best managed clinically; {ingredient} may complement care by"]
+  },
+  "Concise": {
+    "0": ["Clear skin → {ingredient} for upkeep. Why:", "No breakout → {ingredient} keeps it simple. Why:"],
+    "1": ["Mild breakout → {ingredient}. Why it fits:", "Mild → {ingredient}. Key benefit:"],
+    "2": ["Moderate breakout → {ingredient}. Key action:", "Moderate → {ingredient}. What it does:"],
+    "3": ["Severe breakout → see a dermatologist. {ingredient} may assist:", "Severe → dermatologist first. {ingredient} as support:"]
+  },
+  "Enthusiastic": {
+    "0": ["Your skin is glowing — {ingredient} keeps it that way, because", "Clear and happy skin! {ingredient} helps it stay that way, since"],
+    "1": ["Great news for your mild breakout — {ingredient} is exactly right, since", "Your mild breakout has a match — {ingredient} works, because"],
+    "2": ["We've got this — {ingredient} is a strong ally for moderate breakouts, because", "Moderate breakouts meet their match — {ingredient} steps up, since"],
+    "3": ["You're not alone — a dermatologist plus {ingredient} can really help, since", "Big help is on the way — {ingredient} alongside professional care, because"]
+  }
+}
