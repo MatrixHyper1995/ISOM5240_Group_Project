@@ -2,10 +2,8 @@
 Sephora Skin Concern Advisor — 主入口（薄壳）
 Main entry (thin shell): page + flow orchestration. No business logic here.
 
-参考 / Reference: Image Storyteller 的 main() 编排经验 ——
-app.py 只编排流程，具体逻辑在 config / data / models / ui / utils 各模块。
-
 流程 / Flow: 上传 → Analyze → 结果 → 推荐 → 产品 → 评论摘要 → 保存/反馈
+UI 结构严格参照设计原稿v2.html（顶栏 / Hero / 01–06 分节 / 深色页脚）。
 """
 import streamlit as st
 
@@ -20,8 +18,13 @@ from models.generator import generate, release_generator
 from models.review import load_and_curate
 from ui.components import (
     inject_css,
+    render_topbar,
+    render_hero,
+    render_section,
+    render_footer,
     render_severity_bar,
     render_result,
+    render_why_chain,
     render_recommendation,
     render_product_card,
     render_digest,
@@ -33,7 +36,7 @@ from ui.card import render_summary_card
 
 STYLES = ["Gentle", "Professional", "Concise", "Enthusiastic"]
 
-st.set_page_config(page_title="Sephora Skin Concern Advisor", page_icon="🪞", layout="centered")
+st.set_page_config(page_title="SEPHORA · Skin Concern Advisor", page_icon="🪞", layout="centered")
 
 
 # ---------------------------------------------------------------------------
@@ -112,11 +115,12 @@ def main() -> None:
     inject_css()
     init_state()
 
-    # 0. Hero
-    st.title("🪞 Skin Concern Advisor")
-    st.caption("Snap a selfie · Match your routine · Reviews already curated")
+    # 顶栏 + Hero
+    render_topbar()
+    render_hero()
 
-    # 1. 上传 / Upload
+    # 01 UPLOAD
+    render_section("01 / UPLOAD", "Upload Your Selfie", "One clear photo. Front-facing, good light, no filters.")
     uploaded = st.file_uploader(
         "Choose Photo",
         type=config.ALLOWED_TYPES,
@@ -125,29 +129,36 @@ def main() -> None:
     if uploaded is not None and handle_upload(uploaded):
         st.rerun()
 
-    # 2. Analyze 按钮 / Analyze button
+    # 02 ANALYZE
+    render_section("02 / ANALYZE", "Analyze Your Photo", "You stay in control — analysis only runs when you click.")
     can_analyze = st.session_state.image is not None
     if st.button("Analyze", type="primary", disabled=not can_analyze):
         run_analysis()
 
-    # 3~6. 结果 / Result → Recommendation → Products → Digest → Save/Feedback
+    # 03~06 结果 / Result → Recommendation → Products → Save/Feedback
     if st.session_state.severity_key is not None:
-        render_result(st.session_state.severity_label, st.session_state.confidence)
-        render_severity_bar(st.session_state.severity_key)
+        key = st.session_state.severity_key
+
+        # 03 RESULT
+        render_section("03 / RESULT", "Your Skin Snapshot", "Cosmetic skin concern only. Not a medical diagnosis.")
+        render_result(key, st.session_state.severity_label, st.session_state.confidence)
+        render_severity_bar(key)
         render_disclaimer()
 
-        products = get_products(st.session_state.severity_key)
+        products = get_products(key)
         st.session_state.products = products
 
-        # 4. 推荐 / Recommendation
-        st.subheader("Your match")
+        # 04 RECOMMENDATION
+        render_section("04 / RECOMMENDATION", "Your Personalized Recommendation", "Pick a tone. We'll write the recommendation around your result.")
+        render_why_chain(key, products)
         tone = tone_select(STYLES)
         if st.button("Generate recommendation"):
             run_recommendation(tone)
         if st.session_state.recommendation:
             render_recommendation(st.session_state.recommendation)
 
-        # 5. 产品卡片 + 评论摘要 / Product cards + Verified Buyer Digest
+        # 05 MATCHED PRODUCTS
+        render_section("05 / MATCHED PRODUCTS", "Your Skincare Picks", "Only verified-buyer reviews are shown. PRO / CON — no endless scrolling.")
         for product in products:
             render_product_card(product)
 
@@ -160,25 +171,33 @@ def main() -> None:
         if st.session_state.digest and (st.session_state.digest["pro"] or st.session_state.digest["con"]):
             render_digest(st.session_state.digest)
 
-        # 6. 保存 / 分享 / 反馈 / Save / Share / Feedback
+        # 06 SAVE · SHARE · FEEDBACK
+        render_section("06 / SAVE · SHARE · FEEDBACK", "Keep Your Routine", "No account needed. Your summary stays in this session.")
+        st.markdown(
+            '<div class="actions">'
+            '<h3>Save your skincare summary</h3>'
+            '<div class="sub">Download it, share it, or tell us if this was useful.</div>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
         c1, c2 = st.columns(2)
         with c1:
             card = render_summary_card(
-                st.session_state.severity_key,
+                key,
                 st.session_state.severity_label,
                 st.session_state.confidence,
                 st.session_state.recommendation,
                 products,
             )
-            st.download_button("💾 Save card", card, file_name="skin_snapshot.png", mime="image/png")
+            st.download_button("Download Summary", card, file_name="skin_snapshot.png", mime="image/png")
         with c2:
-            st.button("📤 Share")
+            st.button("Share Routine")
 
         # 反馈：两个问题，回答后消失变感谢语（都答后居中一条）
         render_feedback()
 
-    # 页脚 / Footer
-    render_disclaimer()
+    # 页脚
+    render_footer()
 
 
 if __name__ == "__main__":

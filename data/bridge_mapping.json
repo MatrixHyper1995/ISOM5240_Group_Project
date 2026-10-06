@@ -1,5 +1,11 @@
 {
   "severity_labels": {"0": "None", "1": "Mild", "2": "Moderate", "3": "Severe"},
+  "severity_desc": {
+    "0": "No significant breakout concern detected. Maintain your routine with gentle hydration and barrier support.",
+    "1": "A mild breakout pattern may be present. This is a cosmetic skin concern, not a diagnosis.",
+    "2": "A moderate breakout pattern may be present. A targeted routine can help \u2014 see a dermatologist if it persists.",
+    "3": "A significant breakout concern may be present. Please see a dermatologist first \u2014 the products below are supportive only."
+  },
   "ingredient_map": {
     "0": ["Hyaluronic Acid", "Ceramides"],
     "1": ["Niacinamide", "Salicylic Acid"],

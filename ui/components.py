@@ -1,15 +1,16 @@
 """
 Sephora Skin Concern Advisor — UI 组件
-Severity bar, result, product card, Verified Buyer Digest, tone dropdown.
+Topbar, hero, section headers, severity bar, result, product card, digest, footer.
 
-参考 / Reference: Image Storyteller 的 render_* 组件化 + style.css 抽离经验 ——
-每个 UI 区块一个函数，样式独立在 style.css，改样式不动代码。
+参考 / Reference: 设计原稿v2.html —— 每个 UI 区块一个函数，样式独立在 style.css，
+改样式不动代码。
 """
 import html
 
 import streamlit as st
 
 import config
+from utils import get_severity_desc, get_severity_label, get_ingredients, get_products
 
 
 def inject_css() -> None:
@@ -18,22 +19,118 @@ def inject_css() -> None:
     st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
 
 
+def render_topbar() -> None:
+    """顶栏：SEPHORA* 黑底 + 金色底边。"""
+    st.markdown(
+        """
+        <div class="topbar">
+            <span class="wordmark">SEPHORA<span class="flame">*</span></span>
+            <span class="sub">PERSONALIZED SKINCARE · SKIN ADVISOR</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_hero() -> None:
+    """Hero：eyebrow + 衬线主标题 + 标语 + 红色分隔线。"""
+    st.markdown(
+        """
+        <div class="hero">
+            <div class="eyebrow">SKIN CONCERN ADVISOR</div>
+            <h1>Find Your First Step to<br><span class="accent">Better Skin</span></h1>
+            <p class="tag">Snap a selfie · Match your routine · Reviews already curated</p>
+            <p class="tag-sub">Thousands of SKUs. We narrow it down to two or three — with verified buyer reviews already filtered.</p>
+            <div class="rule"></div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_section(idx: str, title: str, hint: str) -> None:
+    """区块标题：序号 + 衬线标题 + 提示。"""
+    st.markdown(
+        f"""
+        <div class="sec">
+            <div class="idx">{html.escape(idx)}</div>
+            <h2>{html.escape(title)}</h2>
+            <p class="hint">{html.escape(hint)}</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_footer() -> None:
+    """页脚：黑底免责声明。"""
+    st.markdown(
+        """
+        <div class="footer">
+            <span class="flame">*</span> For skincare reference only. <span class="gold">Not a medical diagnosis.</span> For skin conditions or concerns, please consult a dermatologist.<br>
+            Images are processed in memory and never stored or shared. This tool recommends only — it does not sell or diagnose.<br>
+            SEPHORA<span class="flame">*</span> · Skin Concern Advisor
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def render_severity_bar(key: str) -> None:
-    """单色分段条（色弱友好：明暗不靠色，点亮 level 格）。"""
+    """单色分段条 + 档位标签（色弱友好：明暗不靠色，点亮 level 格）。"""
     level = int(key) + 1
     cells = "".join(
         '<div class="bar-cell on"></div>' if i < level else '<div class="bar-cell"></div>'
         for i in range(4)
     )
-    st.markdown(f'<div class="severity-bar">{cells}</div>', unsafe_allow_html=True)
+    labels = "".join(
+        f"<span>{html.escape(get_severity_label(str(i)))}</span>" for i in range(4)
+    )
+    st.markdown(
+        f'<div class="severity-bar">{cells}</div>'
+        f'<div class="seg-label">{labels}</div>',
+        unsafe_allow_html=True,
+    )
 
 
-def render_result(label: str, confidence: float) -> None:
-    """渲染分析结果：等级（大字号 Georgia）+ 置信度 + 低置信提示。"""
+def render_result(key: str, label: str, confidence: float) -> None:
+    """渲染分析结果：等级 + 描述 + 置信度 + 低置信提示。"""
+    desc = get_severity_desc(key)
+    st.markdown('<div class="label">BREAKOUT CONCERN LEVEL</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="result-label">{html.escape(label)}</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="confidence">Confidence: {confidence:.0%}</div>', unsafe_allow_html=True)
+    if desc:
+        st.markdown(f'<div class="severity-desc">{html.escape(desc)}</div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="confidence">Confidence: <b>{confidence:.0%}</b></div>',
+        unsafe_allow_html=True,
+    )
     if confidence < config.LOW_CONF_THRESHOLD:
-        st.warning("Low confidence — try another photo with better light, or consult a dermatologist.")
+        st.markdown(
+            '<div class="lowconf">Low confidence — try another photo with better light, '
+            'or consult a dermatologist.</div>',
+            unsafe_allow_html=True,
+        )
+
+
+def render_why_chain(key: str, products: list[dict]) -> None:
+    """「为什么这样推荐」链：等级 → 成分 → 产品。"""
+    label = get_severity_label(key)
+    ingredients = " · ".join(get_ingredients(key))
+    product_names = " · ".join(p.get("name", "") for p in products[:2])
+    st.markdown(
+        f"""
+        <div class="why-chain">
+            <div class="k">WHY THIS RECOMMENDATION</div>
+            <div class="chain">
+                {html.escape(label)} breakout concern
+                <span class="arrow">→</span> {html.escape(ingredients)}
+                <span class="arrow">→</span> {html.escape(product_names)}
+            </div>
+            <div class="note">Ingredients commonly used in cosmetic skincare for {html.escape(label.lower())} breakout concerns.</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def render_recommendation(text: str) -> None:
@@ -65,7 +162,7 @@ def render_digest(digest: dict) -> None:
     pro = digest.get("pro", [])
     con = digest.get("con", [])
     st.markdown(
-        f'<div class="digest-head">Verified Buyer Digest · {len(pro)} PRO+ · {len(con)} CON−</div>',
+        f'<div class="digest-head">VERIFIED BUYER DIGEST · {len(pro)} PRO+ · {len(con)} CON−</div>',
         unsafe_allow_html=True,
     )
     for t in pro:
@@ -94,12 +191,10 @@ def render_feedback() -> None:
     reco_done = st.session_state.get("feedback_reco") is not None
     digest_done = st.session_state.get("feedback_digest") is not None
 
-    # 两个都答完 → 居中一条感谢语
     if reco_done and digest_done:
         st.markdown('<div class="feedback-thanks center">We appreciate your feedback</div>', unsafe_allow_html=True)
         return
 
-    # 推荐问题
     if reco_done:
         st.markdown('<div class="feedback-thanks">We appreciate your feedback</div>', unsafe_allow_html=True)
     else:
@@ -114,7 +209,6 @@ def render_feedback() -> None:
                 st.session_state.feedback_reco = "not_helpful"
                 st.rerun()
 
-    # 评论摘要问题
     if digest_done:
         st.markdown('<div class="feedback-thanks">We appreciate your feedback</div>', unsafe_allow_html=True)
     else:

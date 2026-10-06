@@ -1,68 +1,297 @@
-/* Sephora Skin Concern Advisor — 精简主题
-   参考 Image Storyteller 的 style.css 抽离经验：
-   全直角 + 无高光阴影 + 色弱友好（靠明暗/线条，不靠红绿）。 */
+/* Sephora Skin Concern Advisor — 主题（严格参照设计原稿v2.html）
+   象牙白底 + 近黑字 + Sephora 红 #C8102E + 金色点缀
+   全直角、无高光阴影、色弱友好（靠明暗/符号，不靠红绿） */
 
+:root {
+    --ivory: #FBF8F3;
+    --paper: #FFFFFF;
+    --ink: #1A1512;
+    --ink-soft: #4A433D;
+    --muted: #8A8177;
+    --muted-strong: #6B6259;
+    --sephora-red: #C8102E;
+    --sephora-red-soft: #A50D25;
+    --gold: #B99A5B;
+    --gold-soft: #D6C49A;
+    --line: #E6DFD3;
+    --line-strong: #D8CFC0;
+    --glass: rgba(255, 255, 255, 0.55);
+}
+
+/* ===== Streamlit 原生覆盖 ===== */
 /* 全直角 */
 [data-testid="stButton"] button,
 [data-testid="stSelectbox"] div,
-[data-testid="stFileUploader"] div {
+[data-testid="stFileUploader"] div,
+[data-testid="stAlert"],
+[data-testid="stFileUploaderDropzone"] {
     border-radius: 0 !important;
 }
+/* 主按钮 → Sephora 红 */
+[data-testid="stButton"] button[kind="primary"] {
+    background: var(--sephora-red);
+    border: 1px solid var(--sephora-red);
+    color: #fff;
+    letter-spacing: .08em;
+    font-weight: 600;
+}
+[data-testid="stButton"] button[kind="primary"]:hover {
+    background: var(--sephora-red-soft);
+    border-color: var(--sephora-red-soft);
+    color: #fff;
+}
 
-/* 痘痘等级大字号（Georgia 衬线） */
+/* ===== 顶栏 ===== */
+.topbar {
+    background: var(--ink);
+    color: #fff;
+    padding: 14px 40px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    border-bottom: 2px solid var(--gold);
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.topbar .wordmark {
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-size: 20px;
+    letter-spacing: .32em;
+    font-weight: 700;
+}
+.topbar .flame { color: var(--sephora-red); font-weight: 700; }
+.topbar .sub {
+    color: var(--gold-soft);
+    font-size: 13px;
+    letter-spacing: .18em;
+    margin-left: auto;
+}
+
+/* ===== Hero ===== */
+.hero { padding: 44px 0 26px; border-bottom: 1px solid var(--line-strong); }
+.eyebrow {
+    color: var(--gold);
+    font-size: 12px;
+    letter-spacing: .4em;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+.hero h1 {
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: .02em;
+    line-height: 1.15;
+    margin: 0;
+}
+.hero h1 .accent { color: var(--sephora-red); }
+.hero .tag { margin-top: 14px; color: var(--ink-soft); font-size: 16px; }
+.hero .tag-sub { margin-top: 6px; color: var(--muted-strong); font-size: 14px; }
+.hero .rule { margin-top: 22px; width: 56px; height: 3px; background: var(--sephora-red); }
+
+/* ===== 区块标题 ===== */
+.sec { padding: 34px 0 8px; }
+.sec .idx {
+    color: var(--gold);
+    font-size: 12px;
+    letter-spacing: .3em;
+    font-weight: 600;
+}
+.sec h2 {
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 6px 0 0;
+    color: var(--ink);
+}
+.sec .hint { margin-top: 6px; color: var(--muted-strong); font-size: 13.5px; }
+
+/* ===== 结果 ===== */
+.label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: .2em;
+    font-weight: 600;
+}
 .result-label {
-    font-family: Georgia, serif;
+    font-family: Georgia, 'Liberation Serif', serif;
     font-size: 2.4rem;
-    font-weight: bold;
-    letter-spacing: 0.02em;
+    font-weight: 700;
+    letter-spacing: .02em;
+    color: var(--ink);
 }
-.confidence { color: #777; font-size: 0.9rem; margin-bottom: 6px; }
-
-/* 单色分段条（明暗不靠色） */
-.severity-bar { display: flex; gap: 6px; margin: 8px 0 16px; }
-.bar-cell { width: 48px; height: 10px; background: #EDEDED; }
-.bar-cell.on { background: #2B2B2B; }
-
-/* 产品卡 */
-.product-card {
-    border: 1px solid #E5E0D8;
-    padding: 14px 16px;
-    margin: 10px 0;
+.severity-desc {
+    color: var(--ink-soft);
+    font-size: 15px;
+    margin-top: 6px;
+    max-width: 520px;
 }
-.p-brand { color: #888; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; }
-.p-name  { font-weight: 600; margin: 4px 0; }
-.p-ing   { color: #555; font-size: 0.85rem; }
-.p-why   { color: #777; font-size: 0.85rem; margin-top: 6px; }
+.confidence {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--muted-strong);
+    letter-spacing: .04em;
+}
+.confidence b { color: var(--ink); font-weight: 600; }
 
-/* Verified Buyer Digest（PRO+/CON− 不碰红绿） */
-.digest-head { font-weight: 600; margin-top: 16px; }
-.digest { padding: 6px 0; font-size: 0.9rem; }
-.digest.pro::before { content: "＋ "; font-weight: 700; }
-.digest.con::before { content: "－ "; font-weight: 700; }
+/* 分段条：单色，靠明暗不靠颜色 */
+.severity-bar { display: flex; gap: 6px; margin: 14px 0 0; }
+.bar-cell { width: 56px; height: 10px; background: #ECE6DA; border: 1px solid var(--line-strong); }
+.bar-cell.on { background: var(--ink); border-color: var(--ink); }
+.seg-label {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: .04em;
+    display: flex;
+    justify-content: space-between;
+    max-width: 340px;
+}
 
-/* 推荐文案卡 */
-.reco-card {
-    border-left: 3px solid #2B2B2B;
-    padding: 12px 14px;
-    background: #FAF8F5;
-    margin: 10px 0;
+/* 低置信提示 */
+.lowconf {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    background: #FBF4E9;
+    border: 1px solid var(--gold-soft);
+    padding: 10px 14px;
 }
 
 /* 免责声明 */
 .disclaimer {
-    color: #999;
-    font-size: 0.8rem;
-    margin-top: 20px;
-    padding-top: 10px;
-    border-top: 1px solid #EEE;
+    margin-top: 14px;
+    font-size: 12.5px;
+    color: var(--muted-strong);
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
 }
 
-/* 反馈感谢语（小字） */
-.feedback-thanks {
-    color: #999;
-    font-size: 0.85rem;
-    margin: 6px 0;
+/* ===== 推荐 ===== */
+.reco-card {
+    background: var(--paper);
+    border: 1px solid var(--line-strong);
+    border-left: 3px solid var(--gold);
+    padding: 18px 20px;
+    margin: 10px 0;
+    color: var(--ink);
+    line-height: 1.7;
 }
-.feedback-thanks.center {
-    text-align: center;
+.why-chain {
+    margin-top: 14px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    background: #FAF6EF;
+    border: 1px solid var(--line);
+    padding: 12px 16px;
+    line-height: 1.7;
+}
+.why-chain .k {
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: .06em;
+    font-size: 11.5px;
+}
+.why-chain .chain {
+    font-family: Georgia, serif;
+    font-size: 14px;
+    color: var(--ink);
+    margin-top: 4px;
+}
+.why-chain .chain .arrow { color: var(--muted); padding: 0 6px; }
+.why-chain .note {
+    margin-top: 6px;
+    font-size: 12.5px;
+    color: var(--muted-strong);
+}
+
+/* ===== 产品卡 ===== */
+.product-card {
+    background: var(--paper);
+    border: 1px solid var(--line-strong);
+    border-left: 3px solid var(--gold);
+    padding: 22px 26px;
+    margin: 12px 0;
+}
+.p-brand {
+    color: var(--muted);
+    font-size: 12.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+.p-name {
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-weight: 700;
+    font-size: 20px;
+    margin: 4px 0 0;
+    color: var(--ink);
+}
+.p-ing { color: var(--ink-soft); font-size: 13px; margin-top: 8px; }
+.p-why { color: var(--muted-strong); font-size: 13px; margin-top: 6px; }
+
+/* ===== 评论摘要 ===== */
+.digest-head {
+    font-weight: 600;
+    margin-top: 16px;
+    color: var(--muted-strong);
+    letter-spacing: .02em;
+}
+.digest { padding: 6px 0; font-size: 14px; color: var(--ink-soft); }
+.digest.pro::before { content: "＋ "; font-weight: 700; color: var(--gold); }
+.digest.con::before { content: "－ "; font-weight: 700; color: var(--muted); }
+
+/* ===== 行动区（深色） ===== */
+.actions {
+    margin-top: 26px;
+    background: var(--ink);
+    color: #E8E2D8;
+    padding: 26px 28px;
+}
+.actions h3 {
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-size: 20px;
+    color: #fff;
+    font-weight: 700;
+    margin: 0;
+}
+.actions .sub { margin-top: 6px; font-size: 13.5px; color: var(--gold-soft); }
+
+/* ===== 页脚 ===== */
+.footer {
+    margin-top: 40px;
+    background: var(--ink);
+    color: #E8E2D8;
+    padding: 26px 40px;
+    font-size: 13px;
+    line-height: 1.8;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.footer .gold { color: var(--gold-soft); }
+.footer .flame { color: var(--sephora-red); }
+
+/* ===== 反馈感谢语 ===== */
+.feedback-thanks { color: var(--muted-strong); font-size: 0.85rem; margin: 6px 0; }
+.feedback-thanks.center { text-align: center; }
+
+/* 防止全宽顶栏/页脚造成横向滚动 */
+[data-testid="stAppViewContainer"] {
+    overflow-x: hidden;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 640px) {
+    .topbar { padding: 12px 20px; }
+    .topbar .sub { display: none; }
+    .hero { padding: 36px 0 22px; }
+    .hero h1 { font-size: 30px; }
+    .result-label { font-size: 2rem; }
+    .bar-cell { width: 44px; }
+    .seg-label { max-width: 290px; font-size: 11px; }
+    .product-card { padding: 20px 18px; }
+    .footer { padding: 22px 20px; }
 }

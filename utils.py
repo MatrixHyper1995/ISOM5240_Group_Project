@@ -77,6 +77,11 @@ def get_severity_label(key: str) -> str:
     return load_bridge()["severity_labels"].get(key, "Mild")
 
 
+def get_severity_desc(key: str) -> str:
+    """档位 key → 描述文案（"1" → "A mild breakout pattern may be present..."）。"""
+    return load_bridge().get("severity_desc", {}).get(key, "")
+
+
 def get_ingredients(key: str) -> list[str]:
     """档位 key → 成分列表。"""
     return load_bridge()["ingredient_map"].get(key, ["Niacinamide"])
