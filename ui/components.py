@@ -172,9 +172,9 @@ def render_digest(digest: dict) -> None:
 
 
 def tone_select(styles: list[str], default: str = "Gentle"):
-    """风格下拉（Tone）；filter_mode=None 禁用打字过滤。"""
+    """风格下拉（Tone）。"""
     idx = styles.index(default) if default in styles else 0
-    return st.selectbox("Tone", styles, index=idx, filter_mode=None)
+    return st.selectbox("Tone", styles, index=idx)
 
 
 def render_disclaimer() -> None:
