@@ -1,11 +1,9 @@
-# PyTorch CPU wheels (direct URL) — avoid pulling ~5GB of CUDA/nvidia deps on Streamlit Cloud
-# ⚠️ cp312 = Python 3.12. In Streamlit Cloud → Advanced settings → Python version = 3.12 (default)
+# Minimal RUNTIME dependencies (training deps live in the notebooks, not here)
+# torch must be the CPU wheel: PyPI's default torch is the CUDA build (~5GB nvidia deps),
+# which fails on Streamlit Cloud's small memory. Direct URL pins the exact CPU wheel.
+# ⚠️ cp312 = Python 3.12. Streamlit Cloud default Python is 3.12 — keep them in sync.
 torch @ https://download.pytorch.org/whl/cpu/torch-2.3.1%2Bcpu-cp312-cp312-linux_x86_64.whl
-torchvision @ https://download.pytorch.org/whl/cpu/torchvision-0.18.1%2Bcpu-cp312-cp312-linux_x86_64.whl
 streamlit==1.36.0
 transformers==4.42.0
 Pillow==10.3.0
 pandas==2.2.2
-scikit-learn==1.5.0
-datasets==2.20.0
-accelerate==0.31.0

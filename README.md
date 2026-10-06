@@ -67,7 +67,7 @@ Replace `<HF_USERNAME>` in `config.py` after fine-tuning.
 ## Known gotchas (from the Image Storyteller IA build)
 
 - **transformers 5.x removed `image-to-text`** (now `image-text-to-text`). We use classic `image-classification` / `text-classification`, so pinning `transformers==4.42.0` is safe.
-- **torchvision is transitively imported** by the transformers image-processor registry (ZoeDepth chain) — keep `torchvision` in requirements, matching the `torch` version.
+- **torchvision is NOT required at runtime** — the ViT image-classification pipeline uses the PIL-based `ViTImageProcessor` by default (`use_fast=False`); the torchvision-backed `ViTImageProcessorFast` is only used if you explicitly pass `use_fast=True`. Verified against transformers 4.42.0 source (`image_processing_utils_fast.py` imports torchvision behind `if is_torchvision_available():`). Keep it OUT of requirements.txt to shrink the deploy.
 - **Streamlit `st.selectbox` gained a `filter_mode` arg in 1.64** — pass `filter_mode=None` to disable type-to-filter on the tone dropdown.
 - **`st.rerun()` after a successful generation** — otherwise the result is written to `session_state` but the page doesn't refresh.
 - **`torch` must be the CPU wheel** — PyPI's default `torch` is the CUDA build, which drags in ~5GB of `nvidia-*-cu12` packages and fails on Streamlit Cloud's small memory (`installer returned non-zero exit code`). Pin the CPU wheel via direct URL (`download.pytorch.org/whl/cpu`, `cp312` = Python 3.12).
