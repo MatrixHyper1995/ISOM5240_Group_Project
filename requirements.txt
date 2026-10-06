@@ -1,7 +1,9 @@
 # Minimal RUNTIME dependencies (training deps live in the notebooks, not here)
 # torch must be the CPU wheel: PyPI's default torch is the CUDA build (~5GB nvidia deps),
 # which fails on Streamlit Cloud's small memory. Direct URL pins the exact CPU wheel.
-# ⚠️ cp312 = Python 3.12. Streamlit Cloud default Python is 3.12 — keep them in sync.
+# ⚠️ These pins target Python 3.12 (cp312). Streamlit Cloud now defaults to Python 3.14,
+#    which has NO wheel for torch 2.3.1 / pillow 10.3.0. MUST set the app's Python to 3.12:
+#    Streamlit Cloud → your app → Settings → Advanced settings → "Python version" → 3.12.
 torch @ https://download.pytorch.org/whl/cpu/torch-2.3.1%2Bcpu-cp312-cp312-linux_x86_64.whl
 streamlit==1.36.0
 transformers==4.42.0

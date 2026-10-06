@@ -14,6 +14,11 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
+> **Deploy to Streamlit Cloud**: the requirements pin Python 3.12 wheels (`cp312`).
+> Streamlit Cloud now defaults to **Python 3.14**, which has no wheel for torch 2.3.1 / Pillow 10.3.0
+> (you'll get `torch-2.3.1+cpu-cp312... is not a supported wheel` + `Failed to build pillow==10.3.0`).
+> Fix: app → Settings → **Advanced settings → Python version → 3.12**, then save.
+
 ## Project structure
 
 ```
