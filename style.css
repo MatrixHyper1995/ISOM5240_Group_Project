@@ -19,6 +19,15 @@
 }
 
 /* ===== Streamlit 原生覆盖 ===== */
+/* 保留顶部工具栏与底部 branding，让内容精确贴边（不隐藏） */
+/* 主内容容器：对齐原稿 900px，去掉上下大 padding，让黑顶栏紧贴工具栏、黑页脚紧贴 Manage app */
+[data-testid="stMainBlockContainer"],
+.block-container {
+    max-width: 900px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
 /* 全直角 */
 [data-testid="stButton"] button,
 [data-testid="stSelectbox"] div,
