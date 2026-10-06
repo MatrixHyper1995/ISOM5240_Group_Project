@@ -77,20 +77,17 @@ def render_footer() -> None:
 
 
 def render_severity_bar(key: str) -> None:
-    """单色分段条 + 档位标签（色弱友好：明暗不靠色，点亮 level 格）。"""
+    """单色分段条：每个格子 + 标签同列居中（色弱友好：明暗不靠色，点亮 level 格）。"""
     level = int(key) + 1
-    cells = "".join(
-        '<div class="bar-cell on"></div>' if i < level else '<div class="bar-cell"></div>'
-        for i in range(4)
-    )
-    labels = "".join(
-        f"<span>{html.escape(get_severity_label(str(i)))}</span>" for i in range(4)
-    )
-    st.markdown(
-        f'<div class="severity-bar">{cells}</div>'
-        f'<div class="seg-label">{labels}</div>',
-        unsafe_allow_html=True,
-    )
+    cols = ""
+    for i in range(4):
+        cls = "bar-cell on" if i < level else "bar-cell"
+        label = html.escape(get_severity_label(str(i)))
+        cols += (
+            f'<div class="seg-col"><div class="{cls}"></div>'
+            f'<span class="seg-label">{label}</span></div>'
+        )
+    st.markdown(f'<div class="severity-bar">{cols}</div>', unsafe_allow_html=True)
 
 
 def render_result(key: str, label: str, confidence: float) -> None:

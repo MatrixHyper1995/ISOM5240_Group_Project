@@ -54,6 +54,7 @@ def init_state() -> None:
         "file_id": None,
         "feedback_reco": None,
         "feedback_digest": None,
+        "saved": False,
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -180,7 +181,8 @@ def main() -> None:
             '</div>',
             unsafe_allow_html=True,
         )
-        c1, c2 = st.columns(2)
+        # 三个按钮紧凑并排（原稿 .btn-row：flex gap 10px）
+        c1, c2, c3 = st.columns(3)
         with c1:
             card = render_summary_card(
                 key,
@@ -189,9 +191,17 @@ def main() -> None:
                 st.session_state.recommendation,
                 products,
             )
-            st.download_button("Download Summary", card, file_name="skin_snapshot.png", mime="image/png")
+            st.download_button(
+                "Download Summary", card, file_name="skin_snapshot.png",
+                mime="image/png", use_container_width=True,
+            )
         with c2:
-            st.button("Share Routine")
+            if st.button("Share Routine", use_container_width=True):
+                st.toast("Share this page's URL to share your routine.")
+        with c3:
+            if st.button("Save to This Session", use_container_width=True):
+                st.session_state.saved = True
+                st.toast("Saved to this session.")
 
         # 反馈：两个问题，回答后消失变感谢语（都答后居中一条）
         render_feedback()

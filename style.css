@@ -136,18 +136,17 @@
 }
 .confidence b { color: var(--ink); font-weight: 600; }
 
-/* 分段条：单色，靠明暗不靠颜色 */
+/* 分段条：单色，靠明暗不靠颜色；格子+标签同列居中，天然对齐 */
 .severity-bar { display: flex; gap: 6px; margin: 14px 0 0; }
-.bar-cell { width: 56px; height: 10px; background: #ECE6DA; border: 1px solid var(--line-strong); }
+.seg-col { width: 56px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.bar-cell { width: 56px; height: 10px; background: #ECE6DA; border: 1px solid var(--line-strong); box-sizing: border-box; }
 .bar-cell.on { background: var(--ink); border-color: var(--ink); }
 .seg-label {
-    margin-top: 8px;
     font-size: 12px;
     color: var(--muted);
     letter-spacing: .04em;
-    display: flex;
-    justify-content: space-between;
-    max-width: 340px;
+    text-align: center;
+    white-space: nowrap;
 }
 
 /* 低置信提示 */
@@ -290,8 +289,9 @@
     .hero { padding: 36px 0 22px; }
     .hero h1 { font-size: 30px; }
     .result-label { font-size: 2rem; }
+    .seg-col { width: 44px; }
     .bar-cell { width: 44px; }
-    .seg-label { max-width: 290px; font-size: 11px; }
+    .seg-label { font-size: 11px; }
     .product-card { padding: 20px 18px; }
     .footer { padding: 22px 20px; }
 }
