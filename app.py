@@ -125,7 +125,7 @@ def main() -> None:
     uploaded = st.file_uploader(
         "Choose Photo",
         type=config.ALLOWED_TYPES,
-        help=f"JPG or PNG · Max {config.MAX_UPLOAD_MB} MB · Front-facing, good light",
+        label_visibility="collapsed",
     )
     if uploaded is not None and handle_upload(uploaded):
         st.rerun()

@@ -51,6 +51,74 @@
     color: #fff;
 }
 
+/* ===== 上传区（对齐原稿 .upload 玻璃容器 + .zone 虚线框） ===== */
+[data-testid="stFileUploader"] {
+    margin-top: 20px;
+    background: var(--glass);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--line-strong);
+    border-radius: 0;
+    padding: 44px 32px;
+}
+[data-testid="stFileUploaderDropzone"] {
+    border: 1.5px dashed var(--line-strong);
+    border-radius: 0;
+    background: transparent;
+    padding: 42px 20px;
+    text-align: center;
+}
+/* 指令区：居中竖排 */
+[data-testid="stFileUploaderDropzoneInstructions"] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+/* 隐藏默认两行文字（"Drag and drop file here" / "Limit 200MB..."） */
+[data-testid="stFileUploaderDropzoneInstructions"] > span,
+[data-testid="stFileUploaderDropzoneInstructions"] > small {
+    display: none;
+}
+/* 注入相机图标 + 主文字 + 副文字 */
+[data-testid="stFileUploaderDropzoneInstructions"]::before {
+    content: "📷\A Click to upload or drag your photo here\A JPG or PNG · Max 10 MB · Front-facing, good light";
+    white-space: pre-line;
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.6;
+    text-align: center;
+    margin-bottom: 12px;
+}
+/* 注入隐私说明 */
+[data-testid="stFileUploaderDropzoneInstructions"]::after {
+    content: "For skin analysis only · Processed in memory · Never stored · Never shared";
+    font-size: 12.5px;
+    color: var(--muted-strong);
+    letter-spacing: .02em;
+    margin-top: 14px;
+}
+/* "Browse files" 按钮 → Sephora 红实心，文字换 "Choose Photo" */
+[data-testid="stFileUploaderDropzoneInstructions"] button {
+    background: var(--sephora-red) !important;
+    border: 1px solid var(--sephora-red) !important;
+    color: #fff !important;
+    border-radius: 0 !important;
+    padding: 11px 30px !important;
+    font-size: 0 !important;
+    letter-spacing: .1em;
+}
+[data-testid="stFileUploaderDropzoneInstructions"] button::after {
+    content: "Choose Photo";
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .1em;
+}
+[data-testid="stFileUploaderDropzoneInstructions"] button:hover {
+    background: var(--sephora-red-soft) !important;
+    border-color: var(--sephora-red-soft) !important;
+}
+
 /* ===== 顶栏 ===== */
 .topbar {
     background: var(--ink);
