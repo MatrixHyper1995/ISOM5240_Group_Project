@@ -170,6 +170,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
+    height: 64px; /* 锁定为缩略图高度，文字列不参与撑高，避免缩略图上下留白不均 */
 }
 .photo-row .thumb {
     width: 64px;
@@ -181,6 +182,9 @@
 }
 .photo-row .meta {
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 .photo-row .fname {
     font-size: 14px;
@@ -215,10 +219,7 @@
 [data-testid="stExpander"] summary:hover {
     color: inherit !important;
 }
-/* 状态文字跟随 Analyze 按钮右对齐（label span 是 summary 的首个子元素） */
-[data-testid="stExpander"] summary > span:first-child {
-    justify-content: flex-end !important;
-}
+/* 状态组件已移到卡片下方、占满整行：文字左对齐，不再跟随右侧按钮右对齐 */
 
 /* ===== 顶栏 ===== */
 .topbar {

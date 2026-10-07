@@ -53,6 +53,9 @@ def init_state() -> None:
         "products": None,
         "digest": None,
         "file_id": None,
+        "analyzing": False,
+        "analysis_state": None,
+        "analysis_error": None,
         "feedback_reco": None,
         "feedback_digest": None,
         "saved": False,
@@ -87,20 +90,24 @@ def handle_upload(uploaded) -> bool:
 
 
 def run_analysis() -> None:
-    """Step 02 Analyze：ViT 分类 → 结果；成功后释放模型（用一杀一）。"""
-    with st.status("Analyzing cosmetic skin concerns...", expanded=False) as status:
-        try:
-            key, label, conf = predict_severity(st.session_state.image)
-            st.session_state.severity_key = key
-            st.session_state.severity_label = label
-            st.session_state.confidence = conf
-            status.update(label="Analysis complete", state="complete", expanded=False)
-        except Exception as e:
-            status.update(label="Analysis failed", state="error", expanded=True)
-            st.error(f"Analysis failed: {e}")
-        else:
-            release_vision()
-            st.rerun()
+    """Step 02 Analyze：ViT 分类 → 结果；成功后释放模型（用一杀一）。
+
+    分析进度状态（st.status → stExpander）渲染在卡片下方、占满整行，
+    不挤在右侧按钮列里，避免与 Analyze 按钮错位。
+    """
+    try:
+        key, label, conf = predict_severity(st.session_state.image)
+        st.session_state.severity_key = key
+        st.session_state.severity_label = label
+        st.session_state.confidence = conf
+    except Exception as e:
+        st.session_state.analysis_error = str(e)
+        st.session_state.analysis_state = "failed"
+    else:
+        st.session_state.analysis_state = "complete"
+        release_vision()
+    finally:
+        st.session_state.analyzing = False
 
 
 def run_recommendation(tone: str) -> None:
@@ -141,10 +148,21 @@ def main() -> None:
             render_photo_card(st.session_state.image, filename)
         with c_right:
             if st.button("Analyze", type="primary", disabled=not can_analyze):
-                run_analysis()
+                st.session_state.analyzing = True
+                st.rerun()
     else:
-        if st.button("Analyze", type="primary", disabled=True):
+        st.button("Analyze", type="primary", disabled=True)
+
+    # 分析进度状态：整张卡片下方、占满整行（不挤在按钮列里）
+    if st.session_state.analyzing:
+        with st.status("Analyzing cosmetic skin concerns...", expanded=False) as status:
             run_analysis()
+            if st.session_state.analysis_state == "complete":
+                status.update(label="Analysis complete", state="complete", expanded=False)
+                st.rerun()
+            else:
+                status.update(label="Analysis failed", state="error", expanded=True)
+                st.error(f"Analysis failed: {st.session_state.analysis_error}")
 
     # 03~06 结果 / Result → Recommendation → Products → Save/Feedback
     if st.session_state.severity_key is not None:
