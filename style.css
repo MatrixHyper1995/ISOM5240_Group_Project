@@ -139,6 +139,45 @@
     background: var(--sephora-red-soft) !important;
     border-color: var(--sephora-red-soft) !important;
 }
+/* 隐藏上传后的默认文件列表（哈希文件名），改用自定义卡片展示 */
+[data-testid="stFileUploaderFile"] {
+    display: none;
+}
+/* 上传后卡片（原稿 .card.glass + 红色左边框） */
+.upload-card {
+    background: var(--glass);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--line-strong);
+    border-left: 3px solid var(--sephora-red);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-radius: 0;
+}
+.upload-card .thumb {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    background: #EFE9DE;
+    border: 1px solid var(--line-strong);
+    flex-shrink: 0;
+}
+.upload-card .meta {
+    min-width: 0;
+}
+.upload-card .fname {
+    font-size: 14px;
+    color: var(--ink);
+    word-break: break-all;
+}
+.upload-card .fstatus {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 4px;
+}
 
 /* ===== 顶栏 ===== */
 .topbar {

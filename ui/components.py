@@ -5,7 +5,9 @@ Topbar, hero, section headers, severity bar, result, product card, digest, foote
 参考 / Reference: 设计原稿v2.html —— 每个 UI 区块一个函数，样式独立在 style.css，
 改样式不动代码。
 """
+import base64
 import html
+from io import BytesIO
 
 import streamlit as st
 
@@ -56,6 +58,25 @@ def render_section(idx: str, title: str, hint: str) -> None:
             <div class="idx">{html.escape(idx)}</div>
             <h2>{html.escape(title)}</h2>
             <p class="hint">{html.escape(hint)}</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_photo_card(image, filename: str) -> None:
+    """上传后卡片：缩略图 + 文件名 + 状态（原稿 .card.glass + 红色左边框）。"""
+    buf = BytesIO()
+    image.save(buf, format="PNG")
+    b64 = base64.b64encode(buf.getvalue()).decode()
+    st.markdown(
+        f"""
+        <div class="upload-card">
+            <img class="thumb" src="data:image/png;base64,{b64}" alt="" />
+            <div class="meta">
+                <div class="fname">{html.escape(filename)}</div>
+                <div class="fstatus">Ready · No face detection error</div>
+            </div>
         </div>
         """,
         unsafe_allow_html=True,

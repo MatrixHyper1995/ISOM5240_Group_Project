@@ -22,6 +22,7 @@ from ui.components import (
     render_hero,
     render_section,
     render_footer,
+    render_photo_card,
     render_severity_bar,
     render_result,
     render_why_chain,
@@ -133,6 +134,9 @@ def main() -> None:
     # 02 ANALYZE
     render_section("02 / ANALYZE", "Analyze Your Photo", "You stay in control — analysis only runs when you click.")
     can_analyze = st.session_state.image is not None
+    if can_analyze:
+        filename = uploaded.name if uploaded is not None else "selfie.jpg"
+        render_photo_card(st.session_state.image, filename)
     if st.button("Analyze", type="primary", disabled=not can_analyze):
         run_analysis()
 
