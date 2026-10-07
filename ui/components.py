@@ -65,13 +65,16 @@ def render_section(idx: str, title: str, hint: str) -> None:
 
 
 def render_photo_card(image, filename: str) -> None:
-    """上传后卡片：缩略图 + 文件名 + 状态（原稿 .card.glass + 红色左边框）。"""
+    """上传后卡片内容：缩略图 + 文件名 + 状态（横向，供容器左列使用）。
+
+    外层卡片边框/玻璃背景由 st.container(border=True) 提供，本函数只渲染内部。
+    """
     buf = BytesIO()
     image.save(buf, format="PNG")
     b64 = base64.b64encode(buf.getvalue()).decode()
     st.markdown(
         f"""
-        <div class="upload-card">
+        <div class="photo-row">
             <img class="thumb" src="data:image/png;base64,{b64}" alt="" />
             <div class="meta">
                 <div class="fname">{html.escape(filename)}</div>

@@ -145,21 +145,24 @@
 [data-testid="stFileUploaderFile"] {
     display: none;
 }
-/* 上传后卡片（原稿 .card.glass + 红色左边框） */
-.upload-card {
-    background: var(--glass);
+/* 上传后卡片（原稿 .card.glass + 红色左边框）：用 st.container(border=True) 包裹 */
+[data-testid="stVerticalBlockBorderWrapper"] {
+    background: var(--glass) !important;
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    border: 1px solid var(--line-strong);
-    border-left: 3px solid var(--sephora-red);
+    border: 1px solid var(--line-strong) !important;
+    border-left: 3px solid var(--sephora-red) !important;
+    border-radius: 0 !important;
     padding: 20px 24px;
     margin-bottom: 6px;
+}
+/* 卡片内部横向布局：缩略图 + 文件名/状态 */
+.photo-row {
     display: flex;
     align-items: center;
     gap: 16px;
-    border-radius: 0;
 }
-.upload-card .thumb {
+.photo-row .thumb {
     width: 64px;
     height: 64px;
     object-fit: cover;
@@ -167,15 +170,15 @@
     border: 1px solid var(--line-strong);
     flex-shrink: 0;
 }
-.upload-card .meta {
+.photo-row .meta {
     min-width: 0;
 }
-.upload-card .fname {
+.photo-row .fname {
     font-size: 14px;
     color: var(--ink);
     word-break: break-all;
 }
-.upload-card .fstatus {
+.photo-row .fstatus {
     font-size: 12.5px;
     color: var(--muted);
     margin-top: 4px;
