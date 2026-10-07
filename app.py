@@ -94,7 +94,7 @@ def run_analysis() -> None:
             st.session_state.severity_key = key
             st.session_state.severity_label = label
             st.session_state.confidence = conf
-            status.update(label="✅ Analysis complete", state="complete", expanded=False)
+            status.update(label="Analysis complete", state="complete", expanded=False)
         except Exception as e:
             status.update(label="Analysis failed", state="error", expanded=True)
             st.error(f"Analysis failed: {e}")

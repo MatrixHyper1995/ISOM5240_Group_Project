@@ -192,6 +192,29 @@
     margin-top: 4px;
 }
 
+/* ===== 分析进度状态（st.status → stExpander）：去下拉、去边框、去背景 ===== */
+/* 隐藏展开/收起箭头（禁用下拉） */
+[data-testid="stExpander"] [data-testid="stExpanderToggleIcon"] {
+    display: none !important;
+}
+/* 收起态细节容器：去边框、去背景、去圆角，不再撑高卡片 */
+[data-testid="stExpander"] [data-testid="stExpanderDetails"] {
+    border: none !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+/* 标题行：不可点击（禁用展开/收起），压缩内边距，去掉 hover 变色 */
+[data-testid="stExpander"] summary {
+    pointer-events: none !important;
+    cursor: default !important;
+    list-style: none !important;
+    padding: 2px 0 !important;
+}
+[data-testid="stExpander"] summary:hover {
+    color: inherit !important;
+}
+
 /* ===== 顶栏 ===== */
 .topbar {
     background: var(--ink);
