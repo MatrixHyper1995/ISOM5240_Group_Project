@@ -173,7 +173,7 @@
 .photo-row .thumb {
     width: 64px;
     height: 64px;
-    object-fit: cover;
+    object-fit: contain;
     background: #EFE9DE;
     border: 1px solid var(--line-strong);
     flex-shrink: 0;
