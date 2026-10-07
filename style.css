@@ -369,14 +369,40 @@
 }
 
 /* ===== 推荐 ===== */
-.reco-card {
+/* 04 RECOMMENDATION 外层卡片（对齐设计稿 .reco：白底 + 金色左边框，全直角） */
+[data-testid="stVerticalBlockBorderWrapper"] {
     background: var(--paper);
     border: 1px solid var(--line-strong);
     border-left: 3px solid var(--gold);
-    padding: 18px 20px;
-    margin: 10px 0;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 26px 28px;
+    margin-top: 22px;
+}
+/* Tone 下拉标签（对齐设计稿 .field .lbl） */
+[data-testid="stSelectbox"] label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: .18em;
+    font-weight: 600;
+}
+/* Tone 下拉框（对齐设计稿 select：白底、直角、14px、min-width 220px） */
+[data-testid="stSelectbox"] [data-baseweb="select"] > div {
+    background: #fff;
+    border: 1px solid var(--line-strong);
+    border-radius: 0;
+    font-size: 14px;
     color: var(--ink);
+    min-width: 220px;
+}
+.reco-card {
+    margin-top: 16px;
+    background: #FAF6EF;
+    border: 1px solid var(--line);
+    padding: 18px 20px;
+    font-size: 15px;
     line-height: 1.7;
+    color: var(--ink);
 }
 .why-chain {
     margin-top: 14px;

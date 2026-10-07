@@ -151,12 +151,13 @@ def main() -> None:
 
         # 04 RECOMMENDATION
         render_section("04 / RECOMMENDATION", "Your Personalized Recommendation", "Pick a tone. We'll write the recommendation around your result.")
-        render_why_chain(key, products)
-        tone = tone_select(STYLES)
-        if st.button("Generate recommendation"):
-            run_recommendation(tone)
-        if st.session_state.recommendation:
-            render_recommendation(st.session_state.recommendation)
+        with st.container(border=True):
+            render_why_chain(key, products)
+            tone = tone_select(STYLES)
+            if st.button("Generate recommendation", type="primary"):
+                run_recommendation(tone)
+            if st.session_state.recommendation:
+                render_recommendation(st.session_state.recommendation)
 
         # 05 MATCHED PRODUCTS
         render_section("05 / MATCHED PRODUCTS", "Your Skincare Picks", "Only verified-buyer reviews are shown. PRO / CON — no endless scrolling.")

@@ -67,7 +67,7 @@ def render_section(idx: str, title: str, hint: str) -> None:
 def render_photo_card(image, filename: str) -> None:
     """上传后卡片内容：缩略图 + 文件名 + 状态（横向，供容器左列使用）。
 
-    外层卡片边框/玻璃背景由 st.container(border=True) 提供，本函数只渲染内部。
+    外层卡片边框/玻璃背景由 CSS `[data-testid="stHorizontalBlock"]:has(.photo-row)` 提供，本函数只渲染内部。
     """
     buf = BytesIO()
     image.save(buf, format="PNG")
@@ -203,7 +203,7 @@ def render_digest(digest: dict) -> None:
 def tone_select(styles: list[str], default: str = "Gentle"):
     """风格下拉（Tone）。"""
     idx = styles.index(default) if default in styles else 0
-    return st.selectbox("Tone", styles, index=idx)
+    return st.selectbox("RECOMMENDATION TONE", styles, index=idx)
 
 
 def render_feedback() -> None:
