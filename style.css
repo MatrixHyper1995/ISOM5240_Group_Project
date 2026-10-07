@@ -260,7 +260,7 @@
 }
 .hero h1 {
     font-family: Georgia, 'Liberation Serif', serif;
-    font-size: 40px;
+    font-size: 44px;
     font-weight: 700;
     letter-spacing: .02em;
     line-height: 1.15;
@@ -281,7 +281,7 @@
 }
 .sec h2 {
     font-family: Georgia, 'Liberation Serif', serif;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 700;
     margin: 6px 0 0;
     color: var(--ink);
@@ -433,55 +433,110 @@
 }
 
 /* ===== 产品卡 ===== */
-.product-card {
+.prod-card {
     background: var(--paper);
     border: 1px solid var(--line-strong);
-    border-left: 3px solid var(--gold);
     padding: 22px 26px;
     margin: 12px 0;
+    position: relative;
 }
-.p-brand {
-    color: var(--muted);
-    font-size: 12.5px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
+.prod-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--gold);
 }
-.p-name {
+.prod-name {
     font-family: Georgia, 'Liberation Serif', serif;
-    font-weight: 700;
     font-size: 20px;
-    margin: 4px 0 0;
+    font-weight: 700;
     color: var(--ink);
 }
-.p-ing { color: var(--ink-soft); font-size: 13px; margin-top: 8px; }
-.p-why { color: var(--muted-strong); font-size: 13px; margin-top: 6px; }
-
-/* ===== 评论摘要 ===== */
-.digest-head {
-    font-weight: 600;
-    margin-top: 16px;
-    color: var(--muted-strong);
+.prod-brand {
+    font-size: 12.5px;
+    color: var(--muted);
+    letter-spacing: .08em;
+    margin-top: 2px;
+    text-transform: uppercase;
+}
+.ing { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.ing .ing-chip {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    border: 1px solid var(--line-strong);
+    padding: 3px 10px;
+    border-radius: 0;
     letter-spacing: .02em;
 }
-.digest { padding: 6px 0; font-size: 14px; color: var(--ink-soft); }
-.digest.pro::before { content: "＋ "; font-weight: 700; color: var(--gold); }
-.digest.con::before { content: "－ "; font-weight: 700; color: var(--muted); }
 
-/* ===== 行动区（深色） ===== */
-.actions {
-    margin-top: 26px;
-    background: var(--ink);
-    color: #E8E2D8;
-    padding: 26px 28px;
+/* ===== 评论摘要（对齐设计稿 .rv） ===== */
+.rv { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+.rv-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
 }
-.actions h3 {
+.rv-head .vb {
+    font-size: 11.5px;
+    letter-spacing: .18em;
+    font-weight: 700;
+    color: var(--muted-strong);
+}
+.rv-head .pill {
+    font-size: 11.5px;
+    letter-spacing: .06em;
+    padding: 2px 8px;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-soft);
+}
+.rv .row { display: flex; gap: 10px; margin-bottom: 7px; font-size: 14px; }
+.rv .mark { width: 64px; flex-shrink: 0; font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+.rv .pos { color: var(--ink); }
+.rv .neg { color: var(--ink-soft); }
+.rv .row .txt { color: var(--ink-soft); }
+
+/* ===== 行动区（深色，含下载/分享/保存按钮的 border container） ===== */
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]) {
+    background: var(--ink);
+    border: none;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 26px 28px;
+    margin-top: 26px;
+}
+.actions-head h3 {
     font-family: Georgia, 'Liberation Serif', serif;
     font-size: 20px;
     color: #fff;
     font-weight: 700;
     margin: 0;
 }
-.actions .sub { margin-top: 6px; font-size: 13.5px; color: var(--gold-soft); }
+.actions-head .sub {
+    margin-top: 6px;
+    font-size: 13.5px;
+    color: var(--gold-soft);
+}
+/* 深色区内次要按钮（Download 下载按钮 + Share 按钮）→ btn-light：透明底白字金边 */
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]) [data-testid="stDownloadButton"] button,
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]) [data-testid="stButton"] button[kind="secondary"] {
+    background: transparent;
+    border: 1px solid var(--gold-soft);
+    color: #fff;
+    border-radius: 0;
+    letter-spacing: .08em;
+    font-weight: 600;
+}
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]) [data-testid="stDownloadButton"] button:hover,
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]) [data-testid="stButton"] button[kind="secondary"]:hover {
+    background: var(--gold-soft);
+    color: var(--ink);
+    border-color: var(--gold-soft);
+}
 
 /* ===== 页脚 ===== */
 .footer {
@@ -519,11 +574,11 @@ body,
     .topbar { padding: 12px 20px; }
     .topbar .sub { display: none; }
     .hero { padding: 36px 0 22px; }
-    .hero h1 { font-size: 30px; }
+    .hero h1 { font-size: 32px; }
     .severity-word { font-size: 32px; }
     .seg-col { width: 44px; }
     .bar-cell { width: 44px; }
     .seg-label { font-size: 11px; }
-    .product-card { padding: 20px 18px; }
+    .prod-card { padding: 20px 18px; }
     .footer { padding: 22px 20px; }
 }

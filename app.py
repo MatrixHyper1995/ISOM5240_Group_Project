@@ -175,34 +175,35 @@ def main() -> None:
 
         # 06 SAVE · SHARE · FEEDBACK
         render_section("06 / SAVE · SHARE · FEEDBACK", "Keep Your Routine", "No account needed. Your summary stays in this session.")
-        st.markdown(
-            '<div class="actions">'
-            '<h3>Save your skincare summary</h3>'
-            '<div class="sub">Download it, share it, or tell us if this was useful.</div>'
-            '</div>',
-            unsafe_allow_html=True,
-        )
-        # 三个按钮紧凑并排（原稿 .btn-row：flex gap 10px）
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            card = render_summary_card(
-                key,
-                st.session_state.severity_label,
-                st.session_state.confidence,
-                st.session_state.recommendation,
-                products,
+        with st.container(border=True):
+            st.markdown(
+                '<div class="actions-head">'
+                '<h3>Save your skincare summary</h3>'
+                '<div class="sub">Download it, share it, or tell us if this was useful.</div>'
+                '</div>',
+                unsafe_allow_html=True,
             )
-            st.download_button(
-                "Download Summary", card, file_name="skin_snapshot.png",
-                mime="image/png", use_container_width=True,
-            )
-        with c2:
-            if st.button("Share Routine", use_container_width=True):
-                st.toast("Share this page's URL to share your routine.")
-        with c3:
-            if st.button("Save to This Session", use_container_width=True):
-                st.session_state.saved = True
-                st.toast("Saved to this session.")
+            # 三个按钮并排（对齐原稿 .btn-row）
+            c1, c2, c3 = st.columns(3)
+            with c1:
+                card = render_summary_card(
+                    key,
+                    st.session_state.severity_label,
+                    st.session_state.confidence,
+                    st.session_state.recommendation,
+                    products,
+                )
+                st.download_button(
+                    "Download Summary", card, file_name="skin_snapshot.png",
+                    mime="image/png", use_container_width=True,
+                )
+            with c2:
+                if st.button("Share Routine", use_container_width=True):
+                    st.toast("Share this page's URL to share your routine.")
+            with c3:
+                if st.button("Save to This Session", type="primary", use_container_width=True):
+                    st.session_state.saved = True
+                    st.toast("Saved to this session.")
 
         # 反馈：两个问题，回答后消失变感谢语（都答后居中一条）
         render_feedback()
