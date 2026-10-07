@@ -168,18 +168,21 @@ def render_recommendation(text: str) -> None:
 
 
 def render_product_card(product: dict) -> None:
-    """产品卡：品牌 + 名称 + 成分标签 + why。"""
-    brand = html.escape(product.get("brand", ""))
+    """产品卡：名称在上、品牌·功效在下、成分为标签 chips（对齐设计稿 .prod-card）。"""
     name = html.escape(product.get("name", ""))
-    ingredients = " · ".join(html.escape(i) for i in product.get("ingredients", []))
+    brand = html.escape(product.get("brand", ""))
     why = html.escape(product.get("why", ""))
+    brand_line = brand + (f" · {why}" if why else "")
+    ing_chips = "".join(
+        f'<span class="ing-chip">{html.escape(i)}</span>'
+        for i in product.get("ingredients", [])
+    )
     st.markdown(
         f"""
-        <div class="product-card">
-            <div class="p-brand">{brand}</div>
-            <div class="p-name">{name}</div>
-            <div class="p-ing">{ingredients}</div>
-            <div class="p-why">{why}</div>
+        <div class="prod-card">
+            <div class="prod-name">{name}</div>
+            <div class="prod-brand">{brand_line}</div>
+            <div class="ing">{ing_chips}</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -187,17 +190,33 @@ def render_product_card(product: dict) -> None:
 
 
 def render_digest(digest: dict) -> None:
-    """Verified Buyer Digest：PRO+ / CON− 符号（色弱友好，不碰红绿）。"""
+    """Verified Buyer Digest：标题 + PRO/CON 药丸 + 行式 PRO+/CON−（对齐设计稿 .rv）。"""
     pro = digest.get("pro", [])
     con = digest.get("con", [])
+    rows = ""
+    for t in pro:
+        rows += (
+            f'<div class="row"><span class="mark pos">PRO +</span>'
+            f'<span class="txt">{html.escape(t)}</span></div>'
+        )
+    for t in con:
+        rows += (
+            f'<div class="row"><span class="mark neg">CON −</span>'
+            f'<span class="txt">{html.escape(t)}</span></div>'
+        )
     st.markdown(
-        f'<div class="digest-head">VERIFIED BUYER DIGEST · {len(pro)} PRO+ · {len(con)} CON−</div>',
+        f"""
+        <div class="rv">
+            <div class="rv-head">
+                <span class="vb">VERIFIED BUYER DIGEST</span>
+                <span class="pill">{len(pro)} PRO</span>
+                <span class="pill">{len(con)} CON</span>
+            </div>
+            {rows}
+        </div>
+        """,
         unsafe_allow_html=True,
     )
-    for t in pro:
-        st.markdown(f'<div class="digest pro">{html.escape(t)}</div>', unsafe_allow_html=True)
-    for t in con:
-        st.markdown(f'<div class="digest con">{html.escape(t)}</div>', unsafe_allow_html=True)
 
 
 def tone_select(styles: list[str], default: str = "Gentle"):
@@ -221,11 +240,11 @@ def render_feedback() -> None:
         st.markdown("**Was this recommendation useful?**")
         c1, c2 = st.columns(2)
         with c1:
-            if st.button("👍 Helpful", key="reco_helpful"):
+            if st.button("Yes", key="reco_helpful"):
                 st.session_state.feedback_reco = "helpful"
                 st.rerun()
         with c2:
-            if st.button("👎 Not helpful", key="reco_not"):
+            if st.button("No", key="reco_not"):
                 st.session_state.feedback_reco = "not_helpful"
                 st.rerun()
 
@@ -235,10 +254,10 @@ def render_feedback() -> None:
         st.markdown("**Was the review digest useful?**")
         c1, c2 = st.columns(2)
         with c1:
-            if st.button("👍 Helpful", key="digest_helpful"):
+            if st.button("Yes", key="digest_helpful"):
                 st.session_state.feedback_digest = "helpful"
                 st.rerun()
         with c2:
-            if st.button("👎 Not helpful", key="digest_not"):
+            if st.button("No", key="digest_not"):
                 st.session_state.feedback_digest = "not_helpful"
                 st.rerun()

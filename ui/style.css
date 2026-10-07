@@ -1,0 +1,584 @@
+/* Sephora Skin Concern Advisor — 主题（严格参照设计原稿v2.html）
+   象牙白底 + 近黑字 + Sephora 红 #C8102E + 金色点缀
+   全直角、无高光阴影、色弱友好（靠明暗/符号，不靠红绿） */
+
+:root {
+    --ivory: #FBF8F3;
+    --paper: #FFFFFF;
+    --ink: #1A1512;
+    --ink-soft: #4A433D;
+    --muted: #8A8177;
+    --muted-strong: #6B6259;
+    --sephora-red: #C8102E;
+    --sephora-red-soft: #A50D25;
+    --gold: #B99A5B;
+    --gold-soft: #D6C49A;
+    --line: #E6DFD3;
+    --line-strong: #D8CFC0;
+    --glass: rgba(255, 255, 255, 0.55);
+}
+
+/* ===== Streamlit 原生覆盖 ===== */
+/* 保留顶部工具栏与底部 branding，让内容精确贴边（不隐藏） */
+/* 主内容容器：对齐原稿 900px，上下贴边 */
+/* padding-top 精确让位给 fixed 工具栏（2.875rem=46px），黑顶栏紧贴工具栏下沿不被遮挡 */
+[data-testid="stMainBlockContainer"],
+.block-container {
+    max-width: 900px;
+    padding-top: 2.875rem;
+    padding-bottom: 0;
+}
+
+/* 全直角 */
+[data-testid="stButton"] button,
+[data-testid="stSelectbox"] div,
+[data-testid="stFileUploader"] div,
+[data-testid="stAlert"],
+[data-testid="stFileUploaderDropzone"] {
+    border-radius: 0 !important;
+}
+/* 主按钮 → Sephora 红（对齐原稿 .btn：padding 11px 30px / 14px） */
+[data-testid="stButton"] button[kind="primary"] {
+    background: var(--sephora-red);
+    border: 1px solid var(--sephora-red);
+    color: #fff;
+    letter-spacing: .1em;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 11px 30px;
+}
+[data-testid="stButton"] button[kind="primary"]:hover {
+    background: var(--sephora-red-soft);
+    border-color: var(--sephora-red-soft);
+    color: #fff;
+}
+/* Analyze 按钮：紧凑右对齐（对齐原稿 .btn，不撑满整列） */
+[data-testid="stHorizontalBlock"]:has(.photo-row) [data-testid="stButton"] {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* ===== 上传区（对齐原稿 .upload 玻璃容器 + .zone 虚线框） ===== */
+[data-testid="stFileUploader"] {
+    margin-top: 20px;
+    background: var(--glass);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--line-strong);
+    border-radius: 0;
+    padding: 44px 32px;
+}
+[data-testid="stFileUploaderDropzone"] {
+    border: 1.5px dashed var(--line-strong);
+    border-radius: 0;
+    background: transparent;
+    padding: 42px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/* 相机图标（Dropzone 最前，原稿 .cam 30px） */
+[data-testid="stFileUploaderDropzone"]::before {
+    content: "📷";
+    font-size: 30px;
+    color: var(--muted);
+    line-height: 1;
+    margin-bottom: 10px;
+}
+/* 指令区：居中竖排（主文字 + 副文字） */
+[data-testid="stFileUploaderDropzoneInstructions"] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+/* 隐藏默认内容（云朵图标 + 两行文字，它们嵌套在容器里） */
+[data-testid="stFileUploaderDropzoneInstructions"] > * {
+    display: none;
+}
+/* 主文字（原稿 .t1 16px ink，居中） */
+[data-testid="stFileUploaderDropzoneInstructions"]::before {
+    content: "Click to upload or drag your photo here";
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.5;
+}
+/* 副文字（原稿 .t2 13px muted，居中） */
+[data-testid="stFileUploaderDropzoneInstructions"]::after {
+    content: "JPG or PNG · Max 10 MB · Front-facing, good light";
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+/* 注入隐私说明（在 button 之后，用 Dropzone 的 ::after） */
+[data-testid="stFileUploaderDropzone"]::after {
+    content: "For skin analysis only · Processed in memory · Never stored · Never shared";
+    font-size: 12.5px;
+    color: var(--muted-strong);
+    letter-spacing: .02em;
+    margin-top: 16px;
+}
+/* "Browse files" 按钮 → Sephora 红实心，文字换 "Choose Photo" */
+[data-testid="stFileUploaderDropzone"] button {
+    background: var(--sephora-red) !important;
+    border: 1px solid var(--sephora-red) !important;
+    color: #fff !important;
+    border-radius: 0 !important;
+    padding: 11px 30px !important;
+    font-size: 0 !important;
+    letter-spacing: .1em;
+}
+[data-testid="stFileUploaderDropzone"] button::after {
+    content: "Choose Photo";
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .1em;
+}
+[data-testid="stFileUploaderDropzone"] button:hover {
+    background: var(--sephora-red-soft) !important;
+    border-color: var(--sephora-red-soft) !important;
+}
+/* 隐藏上传后的默认文件列表（哈希文件名），改用自定义卡片展示 */
+[data-testid="stFileUploaderFile"] {
+    display: none;
+}
+/* 上传后卡片（原稿 .card.glass + 红色左边框）：单卡片，左文件右按钮
+   用 :has(.photo-row) 精确定位到含上传信息的水平块，避免误伤其它竖块 */
+[data-testid="stHorizontalBlock"]:has(.photo-row) {
+    background: var(--glass);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--line-strong);
+    border-left: 3px solid var(--sephora-red);
+    border-radius: 0;
+    padding: 26px 28px;
+    margin-bottom: 16px;
+    gap: 16px;
+    align-items: center;
+}
+/* 卡片内部横向布局：缩略图 + 文件名/状态 */
+.photo-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 64px; /* 锁定为缩略图高度，文字列不参与撑高，避免缩略图上下留白不均 */
+}
+.photo-row .thumb {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    background: #EFE9DE;
+    border: 1px solid var(--line-strong);
+    flex-shrink: 0;
+}
+.photo-row .meta {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.photo-row .fname {
+    font-size: 14px;
+    color: var(--ink);
+    word-break: break-all;
+}
+.photo-row .fstatus {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+/* ===== 分析进度状态（st.status → stExpander）：去下拉、去边框、去背景 ===== */
+/* 隐藏展开/收起箭头（禁用下拉） */
+[data-testid="stExpander"] [data-testid="stExpanderToggleIcon"] {
+    display: none !important;
+}
+/* 细节容器（<details>，无 testid，真正的边框/背景在这）：去边框、去背景、去圆角，不再撑高卡片 */
+[data-testid="stExpander"] details {
+    border: none !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+/* 标题行：不可点击（禁用展开/收起），压缩内边距，去掉 hover 变色 */
+[data-testid="stExpander"] summary {
+    pointer-events: none !important;
+    cursor: default !important;
+    list-style: none !important;
+    padding: 2px 0 !important;
+}
+[data-testid="stExpander"] summary:hover {
+    color: inherit !important;
+}
+/* 状态组件已移到卡片下方、占满整行：文字左对齐，不再跟随右侧按钮右对齐 */
+
+/* ===== 顶栏 ===== */
+.topbar {
+    background: var(--ink);
+    color: #fff;
+    padding: 14px 40px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    border-bottom: 2px solid var(--gold);
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.topbar .wordmark {
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-size: 20px;
+    letter-spacing: .32em;
+    font-weight: 700;
+}
+.topbar .flame { color: var(--sephora-red); font-weight: 700; }
+.topbar .sub {
+    color: var(--gold-soft);
+    font-size: 13px;
+    letter-spacing: .18em;
+    margin-left: auto;
+}
+
+/* ===== Hero ===== */
+.hero { padding: 44px 0 26px; border-bottom: 1px solid var(--line-strong); }
+.eyebrow {
+    color: var(--gold);
+    font-size: 12px;
+    letter-spacing: .4em;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+.hero h1 {
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: .02em;
+    line-height: 1.15;
+    margin: 0;
+}
+.hero h1 .accent { color: var(--sephora-red); }
+.hero .tag { margin-top: 14px; color: var(--ink-soft); font-size: 16px; }
+.hero .tag-sub { margin-top: 6px; color: var(--muted-strong); font-size: 14px; }
+.hero .rule { margin-top: 22px; width: 56px; height: 3px; background: var(--sephora-red); }
+
+/* ===== 区块标题 ===== */
+.sec { padding: 34px 0 8px; }
+.sec .idx {
+    color: var(--gold);
+    font-size: 12px;
+    letter-spacing: .3em;
+    font-weight: 600;
+}
+.sec h2 {
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 6px 0 0;
+    color: var(--ink);
+}
+.sec .hint { margin-top: 6px; color: var(--muted-strong); font-size: 13.5px; }
+
+/* ===== 结果 ===== */
+/* 玻璃卡片（03 RESULT 外层容器，对齐设计稿 .card.glass） */
+.card.glass {
+    background: var(--glass);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--line-strong);
+    border-left: 3px solid var(--sephora-red);
+    border-radius: 0;
+    padding: 26px 28px;
+    margin-top: 22px;
+}
+/* 等级行：大字 + 描述并排（baseline 对齐，可换行） */
+.severity-row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+.severity-word {
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: .02em;
+    color: var(--ink);
+    line-height: 1.1;
+}
+.label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: .2em;
+    font-weight: 600;
+}
+.severity-desc {
+    color: var(--ink-soft);
+    font-size: 15px;
+    max-width: 520px;
+    line-height: 1.55;
+}
+.confidence {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--muted-strong);
+    letter-spacing: .04em;
+}
+.confidence b { color: var(--ink); font-weight: 600; }
+
+/* 分段条：单色，靠明暗不靠颜色；格子+标签同列居中，天然对齐 */
+.severity-bar { display: flex; gap: 6px; margin: 14px 0 0; }
+.seg-col { width: 56px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.bar-cell { width: 56px; height: 10px; background: #ECE6DA; border: 1px solid var(--line-strong); box-sizing: border-box; }
+.bar-cell.on { background: var(--ink); border-color: var(--ink); }
+.seg-label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: .04em;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* 低置信提示 */
+.lowconf {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    background: #FBF4E9;
+    border: 1px solid var(--gold-soft);
+    padding: 10px 14px;
+}
+
+/* 免责声明 */
+.disclaimer {
+    margin-top: 14px;
+    font-size: 12.5px;
+    color: var(--muted-strong);
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+}
+
+/* ===== 推荐 ===== */
+/* 04 RECOMMENDATION 外层卡片（对齐设计稿 .reco：白底 + 金色左边框，全直角） */
+[data-testid="stVerticalBlockBorderWrapper"] {
+    background: var(--paper);
+    border: 1px solid var(--line-strong);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 26px 28px;
+    margin-top: 22px;
+}
+/* Tone 下拉标签（对齐设计稿 .field .lbl） */
+[data-testid="stSelectbox"] label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: .18em;
+    font-weight: 600;
+}
+/* Tone 下拉框（对齐设计稿 select：白底、直角、14px、min-width 220px） */
+[data-testid="stSelectbox"] [data-baseweb="select"] > div {
+    background: #fff;
+    border: 1px solid var(--line-strong);
+    border-radius: 0;
+    font-size: 14px;
+    color: var(--ink);
+    min-width: 220px;
+}
+.reco-card {
+    margin-top: 16px;
+    background: #FAF6EF;
+    border: 1px solid var(--line);
+    padding: 18px 20px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ink);
+}
+.why-chain {
+    margin-top: 14px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    background: #FAF6EF;
+    border: 1px solid var(--line);
+    padding: 12px 16px;
+    line-height: 1.7;
+}
+.why-chain .k {
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: .06em;
+    font-size: 11.5px;
+}
+.why-chain .chain {
+    font-family: Georgia, serif;
+    font-size: 14px;
+    color: var(--ink);
+    margin-top: 4px;
+}
+.why-chain .chain .arrow { color: var(--muted); padding: 0 6px; }
+.why-chain .note {
+    margin-top: 6px;
+    font-size: 12.5px;
+    color: var(--muted-strong);
+}
+
+/* ===== 产品卡 ===== */
+.prod-card {
+    background: var(--paper);
+    border: 1px solid var(--line-strong);
+    padding: 22px 26px;
+    margin: 12px 0;
+    position: relative;
+}
+.prod-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--gold);
+}
+.prod-name {
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+}
+.prod-brand {
+    font-size: 12.5px;
+    color: var(--muted);
+    letter-spacing: .08em;
+    margin-top: 2px;
+    text-transform: uppercase;
+}
+.ing { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.ing .ing-chip {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    border: 1px solid var(--line-strong);
+    padding: 3px 10px;
+    border-radius: 0;
+    letter-spacing: .02em;
+}
+
+/* ===== 评论摘要（对齐设计稿 .rv） ===== */
+.rv { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+.rv-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+.rv-head .vb {
+    font-size: 11.5px;
+    letter-spacing: .18em;
+    font-weight: 700;
+    color: var(--muted-strong);
+}
+.rv-head .pill {
+    font-size: 11.5px;
+    letter-spacing: .06em;
+    padding: 2px 8px;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-soft);
+}
+.rv .row { display: flex; gap: 10px; margin-bottom: 7px; font-size: 14px; }
+.rv .mark { width: 64px; flex-shrink: 0; font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+.rv .pos { color: var(--ink); }
+.rv .neg { color: var(--ink-soft); }
+.rv .row .txt { color: var(--ink-soft); }
+
+/* ===== 行动区（深色，含下载/分享/保存按钮的 border container） ===== */
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]) {
+    background: var(--ink);
+    border: none;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 26px 28px;
+    margin-top: 26px;
+}
+.actions-head h3 {
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-size: 20px;
+    color: #fff;
+    font-weight: 700;
+    margin: 0;
+}
+.actions-head .sub {
+    margin-top: 6px;
+    font-size: 13.5px;
+    color: var(--gold-soft);
+}
+/* 深色区内次要按钮（Download 下载按钮 + Share 按钮）→ btn-light：透明底白字金边 */
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]) [data-testid="stDownloadButton"] button,
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]) [data-testid="stButton"] button[kind="secondary"] {
+    background: transparent;
+    border: 1px solid var(--gold-soft);
+    color: #fff;
+    border-radius: 0;
+    letter-spacing: .08em;
+    font-weight: 600;
+}
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]) [data-testid="stDownloadButton"] button:hover,
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]) [data-testid="stButton"] button[kind="secondary"]:hover {
+    background: var(--gold-soft);
+    color: var(--ink);
+    border-color: var(--gold-soft);
+}
+
+/* ===== 页脚 ===== */
+.footer {
+    margin-top: 40px;
+    background: var(--ink);
+    color: #E8E2D8;
+    padding: 26px 40px;
+    font-size: 13px;
+    line-height: 1.8;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.footer .gold { color: var(--gold-soft); }
+.footer .flame { color: var(--sephora-red); }
+
+/* ===== 反馈感谢语 ===== */
+.feedback-thanks { color: var(--muted-strong); font-size: 0.85rem; margin: 6px 0; }
+.feedback-thanks.center { text-align: center; }
+
+/* 页面背景：象牙白 + 同色细微噪点纹理（Sephora 质感） */
+body,
+[data-testid="stAppViewContainer"] {
+    background-color: var(--ivory);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
+/* 防止全宽顶栏/页脚造成横向滚动 */
+[data-testid="stAppViewContainer"] {
+    overflow-x: hidden;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 640px) {
+    .topbar { padding: 12px 20px; }
+    .topbar .sub { display: none; }
+    .hero { padding: 36px 0 22px; }
+    .hero h1 { font-size: 32px; }
+    .severity-word { font-size: 32px; }
+    .seg-col { width: 44px; }
+    .bar-cell { width: 44px; }
+    .seg-label { font-size: 11px; }
+    .prod-card { padding: 20px 18px; }
+    .footer { padding: 22px 20px; }
+}
