@@ -197,8 +197,8 @@
 [data-testid="stExpander"] [data-testid="stExpanderToggleIcon"] {
     display: none !important;
 }
-/* 收起态细节容器：去边框、去背景、去圆角，不再撑高卡片 */
-[data-testid="stExpander"] [data-testid="stExpanderDetails"] {
+/* 细节容器（<details>，无 testid，真正的边框/背景在这）：去边框、去背景、去圆角，不再撑高卡片 */
+[data-testid="stExpander"] details {
     border: none !important;
     background: transparent !important;
     border-radius: 0 !important;
