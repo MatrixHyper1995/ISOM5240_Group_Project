@@ -140,7 +140,7 @@ def main() -> None:
         with c_left:
             render_photo_card(st.session_state.image, filename)
         with c_right:
-            if st.button("Analyze", type="primary", disabled=not can_analyze, use_container_width=True):
+            if st.button("Analyze", type="primary", disabled=not can_analyze):
                 run_analysis()
     else:
         if st.button("Analyze", type="primary", disabled=True):

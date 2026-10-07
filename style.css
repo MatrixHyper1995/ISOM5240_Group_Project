@@ -52,6 +52,12 @@
     border-color: var(--sephora-red-soft);
     color: #fff;
 }
+/* Analyze 按钮：紧凑右对齐（对齐原稿 .btn，不撑满整列） */
+[data-testid="stHorizontalBlock"]:has(.photo-row) [data-testid="stButton"] {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
 
 /* ===== 上传区（对齐原稿 .upload 玻璃容器 + .zone 虚线框） ===== */
 [data-testid="stFileUploader"] {
