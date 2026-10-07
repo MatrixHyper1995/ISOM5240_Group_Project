@@ -136,13 +136,12 @@ def main() -> None:
     can_analyze = st.session_state.image is not None
     if can_analyze:
         filename = uploaded.name if uploaded is not None else "selfie.jpg"
-        with st.container(border=True):
-            c_left, c_right = st.columns([3.2, 1.2], vertical_alignment="center")
-            with c_left:
-                render_photo_card(st.session_state.image, filename)
-            with c_right:
-                if st.button("Analyze", type="primary", disabled=not can_analyze, use_container_width=True):
-                    run_analysis()
+        c_left, c_right = st.columns([3.2, 1.2], vertical_alignment="center")
+        with c_left:
+            render_photo_card(st.session_state.image, filename)
+        with c_right:
+            if st.button("Analyze", type="primary", disabled=not can_analyze, use_container_width=True):
+                run_analysis()
     else:
         if st.button("Analyze", type="primary", disabled=True):
             run_analysis()

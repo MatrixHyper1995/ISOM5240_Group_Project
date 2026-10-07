@@ -145,16 +145,18 @@
 [data-testid="stFileUploaderFile"] {
     display: none;
 }
-/* 上传后卡片（原稿 .card.glass + 红色左边框）：用 st.container(border=True) 包裹 */
-[data-testid="stVerticalBlockBorderWrapper"] {
-    background: var(--glass) !important;
+/* 上传后卡片（原稿 .card.glass + 红色左边框）：单卡片，左文件右按钮
+   用 :has(.photo-row) 精确定位到含上传信息的水平块，避免误伤其它竖块 */
+[data-testid="stHorizontalBlock"]:has(.photo-row) {
+    background: var(--glass);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    border: 1px solid var(--line-strong) !important;
-    border-left: 3px solid var(--sephora-red) !important;
-    border-radius: 0 !important;
-    padding: 20px 24px;
+    border: 1px solid var(--line-strong);
+    border-left: 3px solid var(--sephora-red);
+    border-radius: 0;
+    padding: 18px 24px;
     margin-bottom: 6px;
+    gap: 16px;
 }
 /* 卡片内部横向布局：缩略图 + 文件名/状态 */
 .photo-row {
