@@ -160,9 +160,10 @@
     border: 1px solid var(--line-strong);
     border-left: 3px solid var(--sephora-red);
     border-radius: 0;
-    padding: 18px 24px;
-    margin-bottom: 6px;
+    padding: 26px 28px;
+    margin-bottom: 16px;
     gap: 16px;
+    align-items: center;
 }
 /* 卡片内部横向布局：缩略图 + 文件名/状态 */
 .photo-row {
@@ -213,6 +214,10 @@
 }
 [data-testid="stExpander"] summary:hover {
     color: inherit !important;
+}
+/* 状态文字跟随 Analyze 按钮右对齐（label span 是 summary 的首个子元素） */
+[data-testid="stExpander"] summary > span:first-child {
+    justify-content: flex-end !important;
 }
 
 /* ===== 顶栏 ===== */
