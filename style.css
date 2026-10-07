@@ -37,13 +37,15 @@
 [data-testid="stFileUploaderDropzone"] {
     border-radius: 0 !important;
 }
-/* 主按钮 → Sephora 红 */
+/* 主按钮 → Sephora 红（对齐原稿 .btn：padding 11px 30px / 14px） */
 [data-testid="stButton"] button[kind="primary"] {
     background: var(--sephora-red);
     border: 1px solid var(--sephora-red);
     color: #fff;
-    letter-spacing: .08em;
+    letter-spacing: .1em;
     font-weight: 600;
+    font-size: 14px;
+    padding: 11px 30px;
 }
 [data-testid="stButton"] button[kind="primary"]:hover {
     background: var(--sephora-red-soft);
@@ -151,7 +153,7 @@
     border: 1px solid var(--line-strong);
     border-left: 3px solid var(--sephora-red);
     padding: 20px 24px;
-    margin-bottom: 16px;
+    margin-bottom: 6px;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -415,6 +417,12 @@
 .feedback-thanks { color: var(--muted-strong); font-size: 0.85rem; margin: 6px 0; }
 .feedback-thanks.center { text-align: center; }
 
+/* 页面背景：象牙白 + 同色细微噪点纹理（Sephora 质感） */
+body,
+[data-testid="stAppViewContainer"] {
+    background-color: var(--ivory);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
 /* 防止全宽顶栏/页脚造成横向滚动 */
 [data-testid="stAppViewContainer"] {
     overflow-x: hidden;
