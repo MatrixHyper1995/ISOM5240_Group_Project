@@ -84,27 +84,32 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
     margin-bottom: 20px;
 }
 /* 隐藏默认内容（云朵图标 + 两行文字，它们嵌套在容器里） */
 [data-testid="stFileUploaderDropzoneInstructions"] > * {
     display: none;
 }
-/* 主文字（原稿 .t1 16px ink） */
+/* 主文字（原稿 .t1 16px ink，居中） */
 [data-testid="stFileUploaderDropzoneInstructions"]::before {
     content: "Click to upload or drag your photo here";
+    display: block;
+    width: 100%;
+    text-align: center;
     font-size: 16px;
     color: var(--ink);
     line-height: 1.5;
-    text-align: center;
 }
-/* 副文字（原稿 .t2 13px muted） */
+/* 副文字（原稿 .t2 13px muted，居中） */
 [data-testid="stFileUploaderDropzoneInstructions"]::after {
     content: "JPG or PNG · Max 10 MB · Front-facing, good light";
+    display: block;
+    width: 100%;
+    text-align: center;
     font-size: 13px;
     color: var(--muted);
     margin-top: 4px;
-    text-align: center;
 }
 /* 注入隐私说明（在 button 之后，用 Dropzone 的 ::after） */
 [data-testid="stFileUploaderDropzone"]::after {
