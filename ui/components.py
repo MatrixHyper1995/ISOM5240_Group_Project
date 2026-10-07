@@ -100,37 +100,45 @@ def render_footer() -> None:
     )
 
 
-def render_severity_bar(key: str) -> None:
-    """单色分段条：每个格子 + 标签同列居中（色弱友好：明暗不靠色，点亮 level 格）。"""
+def render_result(key: str, label: str, confidence: float) -> None:
+    """渲染分析结果：一张玻璃卡片包住等级、描述、置信度、分段条、低置信提示与免责声明。"""
+    desc = get_severity_desc(key)
+
+    # 分段条（原样保留：range(4)、4 个 .seg-col 格子、点亮 level+1 格、标签 get_severity_label(str(i))）
     level = int(key) + 1
-    cols = ""
+    seg_cols = ""
     for i in range(4):
         cls = "bar-cell on" if i < level else "bar-cell"
-        label = html.escape(get_severity_label(str(i)))
-        cols += (
+        seg_label = html.escape(get_severity_label(str(i)))
+        seg_cols += (
             f'<div class="seg-col"><div class="{cls}"></div>'
-            f'<span class="seg-label">{label}</span></div>'
+            f'<span class="seg-label">{seg_label}</span></div>'
         )
-    st.markdown(f'<div class="severity-bar">{cols}</div>', unsafe_allow_html=True)
 
-
-def render_result(key: str, label: str, confidence: float) -> None:
-    """渲染分析结果：等级 + 描述 + 置信度 + 低置信提示。"""
-    desc = get_severity_desc(key)
-    st.markdown('<div class="label">BREAKOUT CONCERN LEVEL</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="result-label">{html.escape(label)}</div>', unsafe_allow_html=True)
+    severity_row = f'<span class="severity-word">{html.escape(label)}</span>'
     if desc:
-        st.markdown(f'<div class="severity-desc">{html.escape(desc)}</div>', unsafe_allow_html=True)
+        severity_row += f'<span class="severity-desc">{html.escape(desc)}</span>'
+
+    lowconf = ""
+    if confidence < config.LOW_CONF_THRESHOLD:
+        lowconf = (
+            '<div class="lowconf">Low confidence — try another photo with better light, '
+            'or consult a dermatologist.</div>'
+        )
+
     st.markdown(
-        f'<div class="confidence">Confidence: <b>{confidence:.0%}</b></div>',
+        f"""
+        <div class="card glass">
+          <div class="label">BREAKOUT CONCERN LEVEL</div>
+          <div class="severity-row">{severity_row}</div>
+          <div class="confidence">Confidence: <b>{confidence:.0%}</b></div>
+          <div class="severity-bar">{seg_cols}</div>
+          {lowconf}
+          <div class="disclaimer">For skincare reference only · Not a medical diagnosis · See a dermatologist for persistent or severe concerns</div>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
-    if confidence < config.LOW_CONF_THRESHOLD:
-        st.markdown(
-            '<div class="lowconf">Low confidence — try another photo with better light, '
-            'or consult a dermatologist.</div>',
-            unsafe_allow_html=True,
-        )
 
 
 def render_why_chain(key: str, products: list[dict]) -> None:
@@ -196,15 +204,6 @@ def tone_select(styles: list[str], default: str = "Gentle"):
     """风格下拉（Tone）。"""
     idx = styles.index(default) if default in styles else 0
     return st.selectbox("Tone", styles, index=idx)
-
-
-def render_disclaimer() -> None:
-    """免责声明（固定挂）。For skincare reference only · Not a medical diagnosis."""
-    st.markdown(
-        '<div class="disclaimer">For skincare reference only · Not a medical diagnosis · '
-        'See a dermatologist for persistent or severe concerns</div>',
-        unsafe_allow_html=True,
-    )
 
 
 def render_feedback() -> None:

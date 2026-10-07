@@ -289,24 +289,44 @@
 .sec .hint { margin-top: 6px; color: var(--muted-strong); font-size: 13.5px; }
 
 /* ===== 结果 ===== */
+/* 玻璃卡片（03 RESULT 外层容器，对齐设计稿 .card.glass） */
+.card.glass {
+    background: var(--glass);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--line-strong);
+    border-left: 3px solid var(--sephora-red);
+    border-radius: 0;
+    padding: 26px 28px;
+    margin-top: 22px;
+}
+/* 等级行：大字 + 描述并排（baseline 对齐，可换行） */
+.severity-row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+.severity-word {
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: .02em;
+    color: var(--ink);
+    line-height: 1.1;
+}
 .label {
     font-size: 12px;
     color: var(--muted);
     letter-spacing: .2em;
     font-weight: 600;
 }
-.result-label {
-    font-family: Georgia, 'Liberation Serif', serif;
-    font-size: 2.4rem;
-    font-weight: 700;
-    letter-spacing: .02em;
-    color: var(--ink);
-}
 .severity-desc {
     color: var(--ink-soft);
     font-size: 15px;
-    margin-top: 6px;
     max-width: 520px;
+    line-height: 1.55;
 }
 .confidence {
     margin-top: 10px;
@@ -474,7 +494,7 @@ body,
     .topbar .sub { display: none; }
     .hero { padding: 36px 0 22px; }
     .hero h1 { font-size: 30px; }
-    .result-label { font-size: 2rem; }
+    .severity-word { font-size: 32px; }
     .seg-col { width: 44px; }
     .bar-cell { width: 44px; }
     .seg-label { font-size: 11px; }

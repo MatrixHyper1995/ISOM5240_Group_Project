@@ -23,14 +23,12 @@ from ui.components import (
     render_section,
     render_footer,
     render_photo_card,
-    render_severity_bar,
     render_result,
     render_why_chain,
     render_recommendation,
     render_product_card,
     render_digest,
     tone_select,
-    render_disclaimer,
     render_feedback,
 )
 from ui.card import render_summary_card
@@ -53,9 +51,6 @@ def init_state() -> None:
         "products": None,
         "digest": None,
         "file_id": None,
-        "analyzing": False,
-        "analysis_state": None,
-        "analysis_error": None,
         "feedback_reco": None,
         "feedback_digest": None,
         "saved": False,
@@ -89,32 +84,10 @@ def handle_upload(uploaded) -> bool:
     return True
 
 
-def run_analysis() -> None:
-    """Step 02 Analyze：ViT 分类 → 结果；成功后释放模型（用一杀一）。
-
-    分析进度状态（st.status → stExpander）渲染在卡片下方、占满整行，
-    不挤在右侧按钮列里，避免与 Analyze 按钮错位。
-    """
-    try:
-        key, label, conf = predict_severity(st.session_state.image)
-        st.session_state.severity_key = key
-        st.session_state.severity_label = label
-        st.session_state.confidence = conf
-    except Exception as e:
-        st.session_state.analysis_error = str(e)
-        st.session_state.analysis_state = "failed"
-    else:
-        st.session_state.analysis_state = "complete"
-        release_vision()
-    finally:
-        st.session_state.analyzing = False
-
-
 def run_recommendation(tone: str) -> None:
-    """Step 04 Generate：文案续写；成功后释放模型。"""
+    """Step 04 Generate：文案续写；成功后释放模型（同轮渲染，无 rerun）。"""
     st.session_state.recommendation = generate(tone, st.session_state.severity_key)
     release_generator()
-    st.rerun()
 
 
 # ---------------------------------------------------------------------------
@@ -141,28 +114,29 @@ def main() -> None:
     # 02 ANALYZE
     render_section("02 / ANALYZE", "Analyze Your Photo", "You stay in control — analysis only runs when you click.")
     can_analyze = st.session_state.image is not None
+    analyze_clicked = False
     if can_analyze:
         filename = uploaded.name if uploaded is not None else "selfie.jpg"
         c_left, c_right = st.columns([3.2, 1.2], vertical_alignment="center")
         with c_left:
             render_photo_card(st.session_state.image, filename)
         with c_right:
-            if st.button("Analyze", type="primary", disabled=not can_analyze):
-                st.session_state.analyzing = True
-                st.rerun()
+            analyze_clicked = st.button("Analyze", type="primary", disabled=False)
     else:
-        st.button("Analyze", type="primary", disabled=True)
+        analyze_clicked = st.button("Analyze", type="primary", disabled=True)
 
-    # 分析进度状态：整张卡片下方、占满整行（不挤在按钮列里）
-    if st.session_state.analyzing:
-        with st.status("Analyzing cosmetic skin concerns...", expanded=False) as status:
-            run_analysis()
-            if st.session_state.analysis_state == "complete":
-                status.update(label="Analysis complete", state="complete", expanded=False)
-                st.rerun()
+    # 分析进度：整张卡片下方、占满整行（同轮完成，无 st.rerun，避免页面回顶）
+    if analyze_clicked and can_analyze:
+        with st.spinner("Analyzing cosmetic skin concerns..."):
+            try:
+                key, label, conf = predict_severity(st.session_state.image)
+                st.session_state.severity_key = key
+                st.session_state.severity_label = label
+                st.session_state.confidence = conf
+            except Exception as e:
+                st.error(f"Analysis failed: {e}")
             else:
-                status.update(label="Analysis failed", state="error", expanded=True)
-                st.error(f"Analysis failed: {st.session_state.analysis_error}")
+                release_vision()
 
     # 03~06 结果 / Result → Recommendation → Products → Save/Feedback
     if st.session_state.severity_key is not None:
@@ -171,8 +145,6 @@ def main() -> None:
         # 03 RESULT
         render_section("03 / RESULT", "Your Skin Snapshot", "Cosmetic skin concern only. Not a medical diagnosis.")
         render_result(key, st.session_state.severity_label, st.session_state.confidence)
-        render_severity_bar(key)
-        render_disclaimer()
 
         products = get_products(key)
         st.session_state.products = products
