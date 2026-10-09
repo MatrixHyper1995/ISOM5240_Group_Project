@@ -23,6 +23,10 @@
 [data-testid="stHeader"] {
     display: none !important;
 }
+/* 注入 CSS/JS 的 markdown 容器不占位（消除顶部 16px gap；<style> 仍全局生效、<script> 仍执行）*/
+[data-testid="stVerticalBlock"] > [data-testid="element-container"]:has(style, script) {
+    display: none;
+}
 /* 主内容容器：对齐原稿 900px，贴顶（header 已隐藏，无需让位） */
 [data-testid="stMainBlockContainer"],
 .block-container {
@@ -347,6 +351,14 @@
     box-shadow: none !important;
     padding: 26px 28px;
     margin-top: 22px;
+}
+/* main 内容最外层 wrapper（含 .topbar）：reset 误伤，让黑顶栏贴顶 */
+[data-testid="stVerticalBlockBorderWrapper"]:has(.topbar) {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-top: 0;
+    box-shadow: none;
 }
 /* Tone 下拉标签（对齐设计稿 .field .lbl） */
 [data-testid="stSelectbox"] label {
