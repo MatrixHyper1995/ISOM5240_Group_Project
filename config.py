@@ -41,7 +41,7 @@ GEN_CANDIDATES = {
 # 默认模型 id（demo_mode 关闭 / 未选择时用）
 VISION_MODEL = VISION_CANDIDATES["current (jiefangziyou)"]   # ViT 痘痘严重度分类（现成顶替）
 REVIEW_MODEL = REVIEW_CANDIDATES["distilbert-sst-2"]          # DistilBERT 评论 PRO/CON（SST-2 情感二分类）
-GEN_MODEL    = GEN_CANDIDATES["distilgpt2"]                   # 推荐文案续写（GPT-2 蒸馏，82M）
+GEN_MODEL    = GEN_CANDIDATES["gpt2-medium"]                  # 推荐文案续写（GPT-2 medium 355M，质量更稳）
 
 # ---------------------------------------------------------------------------
 # 阈值与限制 / Thresholds & limits

@@ -19,13 +19,15 @@
 }
 
 /* ===== Streamlit 原生覆盖 ===== */
-/* 保留顶部工具栏与底部 branding，让内容精确贴边（不隐藏） */
-/* 主内容容器：对齐原稿 900px，上下贴边 */
-/* padding-top 精确让位给 fixed 工具栏（2.875rem=46px），黑顶栏紧贴工具栏下沿不被遮挡 */
+/* 顶栏纯 HTML+CSS：隐藏 Streamlit 原生 header 工具栏（Deploy/汉堡菜单），黑顶栏贴顶铺满 */
+[data-testid="stHeader"] {
+    display: none !important;
+}
+/* 主内容容器：对齐原稿 900px，贴顶（header 已隐藏，无需让位） */
 [data-testid="stMainBlockContainer"],
 .block-container {
     max-width: 900px;
-    padding-top: 2.875rem;
+    padding-top: 0;
     padding-bottom: 0;
 }
 

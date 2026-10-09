@@ -54,7 +54,7 @@ def generate(style: str, key: str, model_id: str | None = None) -> str:
             opener,
             max_new_tokens=40,
             do_sample=True,
-            temperature=0.8,
+            temperature=0.7,
             top_p=0.9,
             pad_token_id=generator.tokenizer.eos_token_id,
         )
