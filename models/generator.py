@@ -15,9 +15,9 @@ from utils import get_ingredients, get_opener, get_severity_label, format_opener
 
 
 @st.cache_resource
-def load_generator():
-    """加载并缓存 text-generation 模型。"""
-    return pipeline("text-generation", model=config.GEN_MODEL)
+def load_generator(model_id: str):
+    """加载并缓存 text-generation 模型（按 model_id 缓存）。"""
+    return pipeline("text-generation", model=model_id)
 
 
 def release_generator() -> None:
@@ -36,8 +36,9 @@ def _fallback_reason(ingredients: list[str], label: str) -> str:
     return reason + "."
 
 
-def generate(style: str, key: str) -> str:
-    """生成推荐文案：opener（风格×档位）+ 成分续写；text-gen 失败回退模板。"""
+def generate(style: str, key: str, model_id: str | None = None) -> str:
+    """生成推荐文案：opener（风格×档位）+ 成分续写；text-gen 失败回退模板。model_id 缺省用 config.GEN_MODEL。"""
+    model_id = model_id or config.GEN_MODEL
     ingredients = get_ingredients(key)
     primary = ingredients[0]
     label = get_severity_label(key).lower()
@@ -48,7 +49,7 @@ def generate(style: str, key: str) -> str:
         return f"{opener} {reason}"
 
     try:
-        generator = load_generator()
+        generator = load_generator(model_id)
         out = generator(
             opener,
             max_new_tokens=40,

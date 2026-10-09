@@ -1,0 +1,105 @@
+{
+  "_comment": "UI 组件参数单一事实来源。components.py / app.py / card.py 从这里读参数渲染；style.css 的类名与此表保持对齐。改表不动代码。",
+
+  "css": {
+    "topbar": "topbar",
+    "wordmark": "wordmark",
+    "flame": "flame",
+    "topbar_sub": "sub",
+    "hero": "hero",
+    "eyebrow": "eyebrow",
+    "accent": "accent",
+    "tag": "tag",
+    "tag_sub": "tag-sub",
+    "rule": "rule",
+    "sec": "sec",
+    "idx": "idx",
+    "hint": "hint",
+    "photo_row": "photo-row",
+    "thumb": "thumb",
+    "meta": "meta",
+    "fname": "fname",
+    "fstatus": "fstatus",
+    "card_glass": "card glass",
+    "label": "label",
+    "severity_row": "severity-row",
+    "severity_word": "severity-word",
+    "severity_desc": "severity-desc",
+    "confidence": "confidence",
+    "severity_bar": "severity-bar",
+    "seg_col": "seg-col",
+    "bar_cell": "bar-cell",
+    "bar_cell_on": "bar-cell on",
+    "seg_label": "seg-label",
+    "lowconf": "lowconf",
+    "disclaimer": "disclaimer",
+    "why_chain": "why-chain",
+    "why_k": "k",
+    "chain": "chain",
+    "arrow": "arrow",
+    "note": "note",
+    "reco_card": "reco-card",
+    "prod_card": "prod-card",
+    "prod_name": "prod-name",
+    "prod_brand": "prod-brand",
+    "ing": "ing",
+    "ing_chip": "ing-chip",
+    "rv": "rv",
+    "rv_head": "rv-head",
+    "vb": "vb",
+    "pill": "pill",
+    "row": "row",
+    "mark_pos": "mark pos",
+    "mark_neg": "mark neg",
+    "txt": "txt",
+    "actions_head": "actions-head",
+    "actions_sub": "sub",
+    "feedback_thanks": "feedback-thanks",
+    "center": "center",
+    "footer": "footer",
+    "footer_flame": "flame",
+    "footer_gold": "gold"
+  },
+
+  "severity_bar": {
+    "cells": 4
+  },
+
+  "layout": {
+    "photo_cols": [3.2, 1.2],
+    "save_cols": 3,
+    "feedback_cols": 2
+  },
+
+  "copy": {
+    "tones": ["Gentle", "Professional", "Concise", "Enthusiastic"],
+    "default_tone": "Gentle",
+    "sections": {
+      "01": {"idx": "01 / UPLOAD", "title": "Upload Your Selfie", "hint": "One clear photo. Front-facing, good light, no filters."},
+      "02": {"idx": "02 / ANALYZE", "title": "Analyze Your Photo", "hint": "You stay in control — analysis only runs when you click."},
+      "03": {"idx": "03 / RESULT", "title": "Your Skin Snapshot", "hint": "Cosmetic skin concern only. Not a medical diagnosis."},
+      "04": {"idx": "04 / RECOMMENDATION", "title": "Your Personalized Recommendation", "hint": "Pick a tone. We'll write the recommendation around your result."},
+      "05": {"idx": "05 / MATCHED PRODUCTS", "title": "Your Skincare Picks", "hint": "Only verified-buyer reviews are shown. PRO / CON — no endless scrolling."},
+      "06": {"idx": "06 / SAVE · SHARE · FEEDBACK", "title": "Keep Your Routine", "hint": "No account needed. Your summary stays in this session."}
+    },
+    "buttons": {
+      "choose_photo": "Choose Photo",
+      "analyze": "Analyze",
+      "generate": "Generate recommendation",
+      "share": "Share Routine",
+      "save": "Save to This Session",
+      "download": "Download Summary"
+    },
+    "upload": {
+      "primary": "Click to upload or drag your photo here",
+      "secondary": "JPG or PNG · Max 10 MB · Front-facing, good light",
+      "privacy": "For skin analysis only · Processed in memory · Never stored · Never shared"
+    },
+    "spinner_analyze": "Analyzing cosmetic skin concerns...",
+    "error_analysis": "Analysis failed: {error}",
+    "save_head": "Save your skincare summary",
+    "save_sub": "Download it, share it, or tell us if this was useful.",
+    "toast_share": "Share this page's URL to share your routine.",
+    "toast_saved": "Saved to this session."
+  }
+}

@@ -61,6 +61,11 @@ def load_openers() -> dict:
     return load_json(config.OPENERS_PATH)
 
 
+def load_ui_spec() -> dict:
+    """加载 UI 组件参数表（css 类名 / 分段条格数 / 列宽 / 文案）。"""
+    return load_json(config.UI_SPEC_PATH)
+
+
 def load_reviews():
     """加载评论样本 CSV（若存在）。列需含 product_name / review_text / verified_purchase。"""
     path = config.DATA_DIR / "reviews_sample.csv"

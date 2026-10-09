@@ -99,34 +99,7 @@
 [data-testid="stFileUploaderDropzoneInstructions"] > * {
     display: none;
 }
-/* 主文字（原稿 .t1 16px ink，居中） */
-[data-testid="stFileUploaderDropzoneInstructions"]::before {
-    content: "Click to upload or drag your photo here";
-    display: block;
-    width: 100%;
-    text-align: center;
-    font-size: 16px;
-    color: var(--ink);
-    line-height: 1.5;
-}
-/* 副文字（原稿 .t2 13px muted，居中） */
-[data-testid="stFileUploaderDropzoneInstructions"]::after {
-    content: "JPG or PNG · Max 10 MB · Front-facing, good light";
-    display: block;
-    width: 100%;
-    text-align: center;
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 4px;
-}
-/* 注入隐私说明（在 button 之后，用 Dropzone 的 ::after） */
-[data-testid="stFileUploaderDropzone"]::after {
-    content: "For skin analysis only · Processed in memory · Never stored · Never shared";
-    font-size: 12.5px;
-    color: var(--muted-strong);
-    letter-spacing: .02em;
-    margin-top: 16px;
-}
+/* 上传区 content 文案（主/副文字、隐私说明、Choose Photo）已移至 ui/components.py 的 inject_css() 动态注入，从 ui_spec.json 读，改表不动 CSS */
 /* "Browse files" 按钮 → Sephora 红实心，文字换 "Choose Photo" */
 [data-testid="stFileUploaderDropzone"] button {
     background: var(--sephora-red) !important;
@@ -135,12 +108,6 @@
     border-radius: 0 !important;
     padding: 11px 30px !important;
     font-size: 0 !important;
-    letter-spacing: .1em;
-}
-[data-testid="stFileUploaderDropzone"] button::after {
-    content: "Choose Photo";
-    font-size: 14px;
-    font-weight: 600;
     letter-spacing: .1em;
 }
 [data-testid="stFileUploaderDropzone"] button:hover {

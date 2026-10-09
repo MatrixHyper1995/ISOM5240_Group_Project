@@ -68,6 +68,7 @@ def render_summary_card(
     confidence: float,
     recommendation: str | None,
     products: list[dict],
+    cells: int = 4,
 ) -> bytes:
     """生成「我的肤质快照」PNG 卡片，返回 PNG 字节。"""
     body_w = W - PAD * 2
@@ -124,7 +125,7 @@ def render_summary_card(
     # 单色分段条（明暗不靠色）
     level = int(severity_key) + 1
     cell_w, cell_h, gap = 120, 16, 14
-    for i in range(4):
+    for i in range(cells):
         x = PAD + i * (cell_w + gap)
         color = BAR_ON if i < level else BAR_OFF
         draw.rectangle([x, y, x + cell_w, y + cell_h], fill=color)

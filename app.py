@@ -12,6 +12,7 @@ from utils import (
     load_image,
     validate_size,
     get_products,
+    load_ui_spec,
 )
 from models.vision import predict_severity, release_vision
 from models.generator import generate, release_generator
@@ -30,10 +31,9 @@ from ui.components import (
     render_digest,
     tone_select,
     render_feedback,
+    render_sidebar,
 )
 from ui.card import render_summary_card
-
-STYLES = ["Gentle", "Professional", "Concise", "Enthusiastic"]
 
 st.set_page_config(page_title="SEPHORA · Skin Concern Advisor", page_icon="🪞", layout="centered")
 
@@ -84,9 +84,9 @@ def handle_upload(uploaded) -> bool:
     return True
 
 
-def run_recommendation(tone: str) -> None:
+def run_recommendation(tone: str, model_id: str | None = None) -> None:
     """Step 04 Generate：文案续写；成功后释放模型（同轮渲染，无 rerun）。"""
-    st.session_state.recommendation = generate(tone, st.session_state.severity_key)
+    st.session_state.recommendation = generate(tone, st.session_state.severity_key, model_id=model_id)
     release_generator()
 
 
@@ -97,14 +97,31 @@ def main() -> None:
     inject_css()
     init_state()
 
+    # UI 参数表（单一事实来源）
+    spec = load_ui_spec()
+    C = spec["css"]
+    COPY = spec["copy"]
+    LAYOUT = spec["layout"]
+    CELLS = spec["severity_bar"]["cells"]
+    SEC = COPY["sections"]
+    BTN = COPY["buttons"]
+    TONES = COPY["tones"]
+
+    # 演示模式：st.secrets 脚本控制（默认关），开启时侧栏出三个模型下拉（答辩展示用）
+    demo_mode = st.secrets.get("demo_mode", False)
+    model_sel = render_sidebar(demo_mode)  # None 或 {"vision","review","gen"} 模型 id
+    vision_model = model_sel["vision"] if model_sel else config.VISION_MODEL
+    review_model = model_sel["review"] if model_sel else config.REVIEW_MODEL
+    gen_model = model_sel["gen"] if model_sel else config.GEN_MODEL
+
     # 顶栏 + Hero
     render_topbar()
     render_hero()
 
     # 01 UPLOAD
-    render_section("01 / UPLOAD", "Upload Your Selfie", "One clear photo. Front-facing, good light, no filters.")
+    render_section(SEC["01"]["idx"], SEC["01"]["title"], SEC["01"]["hint"])
     uploaded = st.file_uploader(
-        "Choose Photo",
+        BTN["choose_photo"],
         type=config.ALLOWED_TYPES,
         label_visibility="collapsed",
     )
@@ -112,29 +129,29 @@ def main() -> None:
         st.rerun()
 
     # 02 ANALYZE
-    render_section("02 / ANALYZE", "Analyze Your Photo", "You stay in control — analysis only runs when you click.")
+    render_section(SEC["02"]["idx"], SEC["02"]["title"], SEC["02"]["hint"])
     can_analyze = st.session_state.image is not None
     analyze_clicked = False
     if can_analyze:
         filename = uploaded.name if uploaded is not None else "selfie.jpg"
-        c_left, c_right = st.columns([3.2, 1.2], vertical_alignment="center")
+        c_left, c_right = st.columns(LAYOUT["photo_cols"], vertical_alignment="center")
         with c_left:
             render_photo_card(st.session_state.image, filename)
         with c_right:
-            analyze_clicked = st.button("Analyze", type="primary", disabled=False)
+            analyze_clicked = st.button(BTN["analyze"], type="primary", disabled=False)
     else:
-        analyze_clicked = st.button("Analyze", type="primary", disabled=True)
+        analyze_clicked = st.button(BTN["analyze"], type="primary", disabled=True)
 
     # 分析进度：整张卡片下方、占满整行（同轮完成，无 st.rerun，避免页面回顶）
     if analyze_clicked and can_analyze:
-        with st.spinner("Analyzing cosmetic skin concerns..."):
+        with st.spinner(COPY["spinner_analyze"]):
             try:
-                key, label, conf = predict_severity(st.session_state.image)
+                key, label, conf = predict_severity(st.session_state.image, model_id=vision_model)
                 st.session_state.severity_key = key
                 st.session_state.severity_label = label
                 st.session_state.confidence = conf
             except Exception as e:
-                st.error(f"Analysis failed: {e}")
+                st.error(COPY["error_analysis"].format(error=e))
             else:
                 release_vision()
 
@@ -143,48 +160,48 @@ def main() -> None:
         key = st.session_state.severity_key
 
         # 03 RESULT
-        render_section("03 / RESULT", "Your Skin Snapshot", "Cosmetic skin concern only. Not a medical diagnosis.")
+        render_section(SEC["03"]["idx"], SEC["03"]["title"], SEC["03"]["hint"])
         render_result(key, st.session_state.severity_label, st.session_state.confidence)
 
         products = get_products(key)
         st.session_state.products = products
 
         # 04 RECOMMENDATION
-        render_section("04 / RECOMMENDATION", "Your Personalized Recommendation", "Pick a tone. We'll write the recommendation around your result.")
+        render_section(SEC["04"]["idx"], SEC["04"]["title"], SEC["04"]["hint"])
         with st.container(border=True):
             render_why_chain(key, products)
-            tone = tone_select(STYLES)
-            if st.button("Generate recommendation", type="primary"):
-                run_recommendation(tone)
+            tone = tone_select(TONES)
+            if st.button(BTN["generate"], type="primary"):
+                run_recommendation(tone, model_id=gen_model)
             if st.session_state.recommendation:
                 render_recommendation(st.session_state.recommendation)
 
         # 05 MATCHED PRODUCTS
-        render_section("05 / MATCHED PRODUCTS", "Your Skincare Picks", "Only verified-buyer reviews are shown. PRO / CON — no endless scrolling.")
+        render_section(SEC["05"]["idx"], SEC["05"]["title"], SEC["05"]["hint"])
         for product in products:
             render_product_card(product)
 
         # 评论摘要（reviews_sample.csv 生成后自动接入；懒加载 + 缓存，只跑一次）
         if st.session_state.digest is None and products:
             try:
-                st.session_state.digest = load_and_curate([p["name"] for p in products])
+                st.session_state.digest = load_and_curate([p["name"] for p in products], model_id=review_model)
             except Exception:
                 st.session_state.digest = {"pro": [], "con": []}
         if st.session_state.digest and (st.session_state.digest["pro"] or st.session_state.digest["con"]):
             render_digest(st.session_state.digest)
 
         # 06 SAVE · SHARE · FEEDBACK
-        render_section("06 / SAVE · SHARE · FEEDBACK", "Keep Your Routine", "No account needed. Your summary stays in this session.")
+        render_section(SEC["06"]["idx"], SEC["06"]["title"], SEC["06"]["hint"])
         with st.container(border=True):
             st.markdown(
-                '<div class="actions-head">'
-                '<h3>Save your skincare summary</h3>'
-                '<div class="sub">Download it, share it, or tell us if this was useful.</div>'
+                f'<div class="{C["actions_head"]}">'
+                f'<h3>{COPY["save_head"]}</h3>'
+                f'<div class="{C["actions_sub"]}">{COPY["save_sub"]}</div>'
                 '</div>',
                 unsafe_allow_html=True,
             )
             # 三个按钮并排（对齐原稿 .btn-row）
-            c1, c2, c3 = st.columns(3)
+            c1, c2, c3 = st.columns(LAYOUT["save_cols"])
             with c1:
                 card = render_summary_card(
                     key,
@@ -192,18 +209,19 @@ def main() -> None:
                     st.session_state.confidence,
                     st.session_state.recommendation,
                     products,
+                    cells=CELLS,
                 )
                 st.download_button(
-                    "Download Summary", card, file_name="skin_snapshot.png",
+                    BTN["download"], card, file_name="skin_snapshot.png",
                     mime="image/png", use_container_width=True,
                 )
             with c2:
-                if st.button("Share Routine", use_container_width=True):
-                    st.toast("Share this page's URL to share your routine.")
+                if st.button(BTN["share"], use_container_width=True):
+                    st.toast(COPY["toast_share"])
             with c3:
-                if st.button("Save to This Session", type="primary", use_container_width=True):
+                if st.button(BTN["save"], type="primary", use_container_width=True):
                     st.session_state.saved = True
-                    st.toast("Saved to this session.")
+                    st.toast(COPY["toast_saved"])
 
         # 反馈：两个问题，回答后消失变感谢语（都答后居中一条）
         render_feedback()
