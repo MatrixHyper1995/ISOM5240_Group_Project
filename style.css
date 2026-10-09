@@ -549,3 +549,79 @@ body,
     .prod-card { padding: 20px 18px; }
     .footer { padding: 22px 20px; }
 }
+
+/* ===== 手搓交互元素（减少 Streamlit 组件依赖） ===== */
+/* 行动区：深色容器（原稿 .actions，替代 st.container(border=True)+data-testid hack） */
+.actions {
+    margin-top: 26px;
+    background: var(--ink);
+    color: #E8E2D8;
+    padding: 28px 30px;
+}
+.actions h3 {
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-size: 20px;
+    color: #fff;
+    font-weight: 700;
+    margin: 0;
+}
+.actions .sub { margin-top: 6px; font-size: 13.5px; color: var(--gold-soft); }
+.actions .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+
+/* 按钮：btn-light（透明金边）/ btn-solid（红实心），手搓 HTML <a>/<button> */
+a.btn-light, button.btn-light {
+    display: inline-block;
+    background: transparent; color: #fff;
+    border: 1px solid var(--gold-soft);
+    padding: 10px 22px; font-size: 13.5px; letter-spacing: .08em;
+    cursor: pointer; font-weight: 600; border-radius: 0;
+    text-decoration: none; font-family: inherit;
+    transition: all .15s ease;
+}
+a.btn-light:hover, button.btn-light:hover {
+    background: var(--gold-soft); color: var(--ink); border-color: var(--gold-soft);
+}
+button.btn-solid {
+    background: var(--sephora-red); color: #fff;
+    border: 1px solid var(--sephora-red);
+    padding: 10px 22px; font-size: 13.5px; letter-spacing: .08em;
+    cursor: pointer; font-weight: 600; border-radius: 0;
+    font-family: inherit;
+    transition: all .15s ease;
+}
+button.btn-solid:hover { background: var(--sephora-red-soft); border-color: var(--sephora-red-soft); }
+
+/* 内联提示（替代 st.toast） */
+.inline-toast {
+    margin-top: 12px; font-size: 13px; color: var(--ink-soft);
+    background: #FBF4E9; border: 1px solid var(--gold-soft);
+    padding: 10px 14px; display: none;
+}
+
+/* 反馈区（手搓原生按钮，替代 st.button） */
+.feedback {
+    margin-top: 22px;
+    display: flex; gap: 10px 20px; flex-wrap: wrap; align-items: center;
+    font-size: 13.5px; color: var(--muted-strong);
+}
+.feedback-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.feedback .fb {
+    border: 1px solid var(--line-strong); background: #fff;
+    padding: 8px 16px; font-size: 13px; letter-spacing: .04em;
+    cursor: pointer; color: var(--ink-soft); border-radius: 0;
+    font-family: inherit;
+    transition: all .15s ease;
+}
+.feedback .fb:hover { border-color: var(--ink); color: var(--ink); }
+.feedback .fb.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+.feedback .fb.dim { opacity: .35; border-color: var(--line); color: var(--muted); }
+.feedback .fb.dim:hover { border-color: var(--line); color: var(--muted); }
+.feedback .fb:disabled { cursor: not-allowed; }
+.feedback .thanks { color: var(--muted-strong); font-style: italic; font-size: 12.5px; }
+
+/* 响应式：手搓元素 */
+@media (max-width: 640px) {
+    .actions { padding: 22px 18px; }
+    .actions .btn-row { flex-direction: column; }
+    .actions .btn-row a.btn-light, .actions .btn-row button { width: 100%; text-align: center; }
+}

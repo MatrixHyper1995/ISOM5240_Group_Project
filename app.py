@@ -31,7 +31,9 @@ from ui.components import (
     render_digest,
     tone_select,
     render_feedback,
+    render_actions,
     render_sidebar,
+    inject_interactions_js,
 )
 from ui.card import render_summary_card
 
@@ -51,9 +53,6 @@ def init_state() -> None:
         "products": None,
         "digest": None,
         "file_id": None,
-        "feedback_reco": None,
-        "feedback_digest": None,
-        "saved": False,
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -62,7 +61,7 @@ def init_state() -> None:
 
 def reset_results() -> None:
     """换图后重置旧结果。"""
-    for key in ("severity_key", "severity_label", "confidence", "recommendation", "products", "digest", "feedback_reco", "feedback_digest"):
+    for key in ("severity_key", "severity_label", "confidence", "recommendation", "products", "digest"):
         st.session_state[key] = None
 
 
@@ -95,11 +94,11 @@ def run_recommendation(tone: str, model_id: str | None = None) -> None:
 # ---------------------------------------------------------------------------
 def main() -> None:
     inject_css()
+    inject_interactions_js()
     init_state()
 
     # UI 参数表（单一事实来源）
     spec = load_ui_spec()
-    C = spec["css"]
     COPY = spec["copy"]
     LAYOUT = spec["layout"]
     CELLS = spec["severity_bar"]["cells"]
@@ -192,38 +191,17 @@ def main() -> None:
 
         # 06 SAVE · SHARE · FEEDBACK
         render_section(SEC["06"]["idx"], SEC["06"]["title"], SEC["06"]["hint"])
-        with st.container(border=True):
-            st.markdown(
-                f'<div class="{C["actions_head"]}">'
-                f'<h3>{COPY["save_head"]}</h3>'
-                f'<div class="{C["actions_sub"]}">{COPY["save_sub"]}</div>'
-                '</div>',
-                unsafe_allow_html=True,
-            )
-            # 三个按钮并排（对齐原稿 .btn-row）
-            c1, c2, c3 = st.columns(LAYOUT["save_cols"])
-            with c1:
-                card = render_summary_card(
-                    key,
-                    st.session_state.severity_label,
-                    st.session_state.confidence,
-                    st.session_state.recommendation,
-                    products,
-                    cells=CELLS,
-                )
-                st.download_button(
-                    BTN["download"], card, file_name="skin_snapshot.png",
-                    mime="image/png", use_container_width=True,
-                )
-            with c2:
-                if st.button(BTN["share"], use_container_width=True):
-                    st.toast(COPY["toast_share"])
-            with c3:
-                if st.button(BTN["save"], type="primary", use_container_width=True):
-                    st.session_state.saved = True
-                    st.toast(COPY["toast_saved"])
+        card = render_summary_card(
+            key,
+            st.session_state.severity_label,
+            st.session_state.confidence,
+            st.session_state.recommendation,
+            products,
+            cells=CELLS,
+        )
+        render_actions(card)  # 手搓：<a download> + 分享/保存按钮 + 内联提示
 
-        # 反馈：两个问题，回答后消失变感谢语（都答后居中一条）
+        # 反馈：两个问题，手搓 HTML 按钮 + JS 锁定（不依赖 st.button / session_state）
         render_feedback()
 
     # 页脚

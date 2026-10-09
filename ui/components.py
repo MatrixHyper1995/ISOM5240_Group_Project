@@ -10,6 +10,7 @@ Topbar, hero, section headers, severity bar, result, product card, digest, foote
 """
 import base64
 import html
+import json
 from io import BytesIO
 
 import streamlit as st
@@ -336,39 +337,90 @@ def render_sidebar(demo_mode: bool) -> dict | None:
 
 
 def render_feedback() -> None:
-    """反馈区：两个问题（推荐 / 评论摘要），回答后消失变感谢语；都答后居中一条。"""
-    C = _css()
-    reco_done = st.session_state.get("feedback_reco") is not None
-    digest_done = st.session_state.get("feedback_digest") is not None
+    """反馈区：两个问题（推荐 / 评论摘要），手搓 HTML 按钮，JS 事件委托锁定（不依赖 st.button）。"""
+    st.markdown(
+        """
+        <div class="feedback">
+          <div class="feedback-group" data-q="reco">
+            <span>Was this recommendation useful?</span>
+            <button class="fb" type="button">Yes</button>
+            <button class="fb" type="button">No</button>
+          </div>
+          <div class="feedback-group" data-q="digest">
+            <span>Was the review digest useful?</span>
+            <button class="fb" type="button">Yes</button>
+            <button class="fb" type="button">No</button>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    if reco_done and digest_done:
-        st.markdown(f'<div class="{C["feedback_thanks"]} {C["center"]}">We appreciate your feedback</div>', unsafe_allow_html=True)
-        return
 
-    if reco_done:
-        st.markdown(f'<div class="{C["feedback_thanks"]}">We appreciate your feedback</div>', unsafe_allow_html=True)
-    else:
-        st.markdown("**Was this recommendation useful?**")
-        c1, c2 = st.columns(_layout()["feedback_cols"])
-        with c1:
-            if st.button("Yes", key="reco_helpful"):
-                st.session_state.feedback_reco = "helpful"
-                st.rerun()
-        with c2:
-            if st.button("No", key="reco_not"):
-                st.session_state.feedback_reco = "not_helpful"
-                st.rerun()
+def render_actions(summary_png: bytes) -> None:
+    """06 行动区（深色）：下载链接（<a download>）+ 分享/保存按钮（手搓 HTML，替代 st.download_button / st.button）。"""
+    b64 = base64.b64encode(summary_png).decode()
+    copy = _copy()
+    st.markdown(
+        f"""
+        <div class="actions">
+          <h3>{html.escape(copy["save_head"])}</h3>
+          <div class="sub">{html.escape(copy["save_sub"])}</div>
+          <div class="btn-row">
+            <a class="btn-light" download="skin_snapshot.png" href="data:image/png;base64,{b64}">{html.escape(copy["buttons"]["download"])}</a>
+            <button class="btn-light" type="button" data-action="share">{html.escape(copy["buttons"]["share"])}</button>
+            <button class="btn-solid" type="button" data-action="save">{html.escape(copy["buttons"]["save"])}</button>
+          </div>
+          <div class="inline-toast" id="inlineToast"></div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    if digest_done:
-        st.markdown(f'<div class="{C["feedback_thanks"]}">We appreciate your feedback</div>', unsafe_allow_html=True)
-    else:
-        st.markdown("**Was the review digest useful?**")
-        c1, c2 = st.columns(_layout()["feedback_cols"])
-        with c1:
-            if st.button("Yes", key="digest_helpful"):
-                st.session_state.feedback_digest = "helpful"
-                st.rerun()
-        with c2:
-            if st.button("No", key="digest_not"):
-                st.session_state.feedback_digest = "not_helpful"
-                st.rerun()
+
+def inject_interactions_js() -> None:
+    """注入手搓交互 JS：反馈按钮锁定 + 分享/保存内联提示（事件委托，rerun 后仍生效）。"""
+    copy = _copy()
+    share_js = json.dumps(copy["toast_share"])
+    saved_js = json.dumps(copy["toast_saved"])
+    st.markdown(
+        f"""
+        <script>
+        (function(){{
+          // 反馈按钮：点击后锁定该组（选中高亮 + 未选变淡 + 全部禁用）+ 追加感谢语
+          document.addEventListener('click', function(e){{
+            var b = e.target.closest('.fb');
+            if(!b || b.disabled) return;
+            var g = b.closest('.feedback-group');
+            if(!g) return;
+            var btns = g.querySelectorAll('.fb');
+            btns.forEach(function(x){{
+              x.disabled = true;
+              if(x !== b){{ x.classList.add('dim'); }}
+            }});
+            b.classList.add('active');
+            if(!g.querySelector('.thanks')){{
+              var t = document.createElement('span');
+              t.className = 'thanks';
+              t.textContent = 'We appreciate your feedback';
+              g.appendChild(t);
+            }}
+          }});
+          // 分享 / 保存：点击显示内联提示（替代 st.toast）
+          document.addEventListener('click', function(e){{
+            var btn = e.target.closest('[data-action]');
+            if(!btn) return;
+            var toast = document.getElementById('inlineToast');
+            if(!toast) return;
+            if(btn.getAttribute('data-action') === 'share'){{
+              toast.textContent = {share_js};
+            }} else {{
+              toast.textContent = {saved_js};
+            }}
+            toast.style.display = 'block';
+          }});
+        }})();
+        </script>
+        """,
+        unsafe_allow_html=True,
+    )
