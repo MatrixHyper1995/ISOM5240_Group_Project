@@ -16,7 +16,7 @@ from utils import (
 )
 from models.vision import predict_severity, release_vision
 from models.generator import generate, release_generator
-from models.review import load_and_curate
+from models.review import curate_per_product
 from ui.components import (
     inject_css,
     render_topbar,
@@ -28,7 +28,6 @@ from ui.components import (
     render_why_chain,
     render_recommendation,
     render_product_card,
-    render_digest,
     tone_select,
     render_feedback,
     render_actions,
@@ -50,7 +49,7 @@ def init_state() -> None:
         "confidence": None,
         "recommendation": None,
         "products": None,
-        "digest": None,
+        "digests": None,
         "file_id": None,
         "feedback_reco": None,
         "feedback_digest": None,
@@ -63,7 +62,7 @@ def init_state() -> None:
 
 def reset_results() -> None:
     """换图后重置旧结果。"""
-    for key in ("severity_key", "severity_label", "confidence", "recommendation", "products", "digest", "feedback_reco", "feedback_digest"):
+    for key in ("severity_key", "severity_label", "confidence", "recommendation", "products", "digests", "feedback_reco", "feedback_digest"):
         st.session_state[key] = None
 
 
@@ -178,17 +177,17 @@ def main() -> None:
 
         # 05 MATCHED PRODUCTS
         render_section(SEC["05"]["idx"], SEC["05"]["title"], SEC["05"]["hint"])
-        for product in products:
-            render_product_card(product)
 
-        # 评论摘要（reviews_sample.csv 生成后自动接入；懒加载 + 缓存，只跑一次）
-        if st.session_state.digest is None and products:
+        # 评论摘要：按产品分发，每个产品卡内嵌自己的 Verified Buyer Digest
+        if st.session_state.digests is None and products:
             try:
-                st.session_state.digest = load_and_curate([p["name"] for p in products], model_id=review_model)
+                st.session_state.digests = curate_per_product([p["name"] for p in products], model_id=review_model)
             except Exception:
-                st.session_state.digest = {"pro": [], "con": []}
-        if st.session_state.digest and (st.session_state.digest["pro"] or st.session_state.digest["con"]):
-            render_digest(st.session_state.digest)
+                st.session_state.digests = {p["name"]: {"pro": [], "con": []} for p in products}
+        digests = st.session_state.digests or {}
+
+        for product in products:
+            render_product_card(product, digests.get(product["name"]))
 
         # 06 SAVE · SHARE · FEEDBACK
         render_section(SEC["06"]["idx"], SEC["06"]["title"], SEC["06"]["hint"])

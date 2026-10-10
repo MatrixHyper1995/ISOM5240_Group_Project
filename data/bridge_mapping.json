@@ -14,20 +14,92 @@
   },
   "product_map": {
     "0": [
-      {"name": "Ultra Repair Cream Intense Hydration", "brand": "First Aid Beauty", "product_id": "P248407", "ingredients": ["Ceramides"], "why": "Barrier repair, intense hydration"},
-      {"name": "Dramatically Different Moisturizing Gel", "brand": "Clinique", "product_id": "P122900", "ingredients": ["Hyaluronic Acid"], "why": "Lightweight hydration, maintenance"}
+      {
+        "name": "Ultra Repair Cream Intense Hydration",
+        "short": "Ultra Repair Cream",
+        "brand": "First Aid Beauty",
+        "product_id": "P248407",
+        "ingredients": ["Ceramides"],
+        "why": "Barrier repair, intense hydration",
+        "concern": "All skin types",
+        "tags": ["Barrier repair", "Intense hydration"]
+      },
+      {
+        "name": "Dramatically Different Moisturizing Gel",
+        "short": "Dramatically Different Gel",
+        "brand": "Clinique",
+        "product_id": "P122900",
+        "ingredients": ["Hyaluronic Acid"],
+        "why": "Lightweight hydration, maintenance",
+        "concern": "All skin types",
+        "tags": ["Lightweight hydration", "Maintenance"]
+      }
     ],
     "1": [
-      {"name": "Niacinamide 10% + Zinc 1% Oil Control Serum", "brand": "The Ordinary", "product_id": "P427417", "ingredients": ["Niacinamide"], "why": "Oil control, prevention"},
-      {"name": "Salicylic Acid Acne + Pore Cleanser", "brand": "The Inkey List", "product_id": "P443833", "ingredients": ["Salicylic Acid"], "why": "Gentle pore-clearing"},
-      {"name": "Skin Perfecting 2% BHA Liquid Exfoliant", "brand": "Paula's Choice", "product_id": "P469502", "ingredients": ["Salicylic Acid"], "why": "Pore-clearing exfoliation"}
+      {
+        "name": "Niacinamide 10% + Zinc 1% Oil Control Serum",
+        "short": "10% Niacinamide Serum",
+        "brand": "The Ordinary",
+        "product_id": "P427417",
+        "ingredients": ["Niacinamide"],
+        "why": "Oil control, prevention",
+        "concern": "Acne-prone skin",
+        "tags": ["Oil control", "Prevention"]
+      },
+      {
+        "name": "Salicylic Acid Acne + Pore Cleanser",
+        "short": "Salicylic Acid Cleanser",
+        "brand": "The Inkey List",
+        "product_id": "P443833",
+        "ingredients": ["Salicylic Acid"],
+        "why": "Gentle pore-clearing",
+        "concern": "Acne-prone skin",
+        "tags": ["Pore-clearing"]
+      },
+      {
+        "name": "Skin Perfecting 2% BHA Liquid Exfoliant",
+        "short": "2% BHA Liquid Exfoliant",
+        "brand": "Paula's Choice",
+        "product_id": "P469502",
+        "ingredients": ["Salicylic Acid"],
+        "why": "Pore-clearing exfoliation",
+        "concern": "Acne-prone skin",
+        "tags": ["Pore-clearing", "Exfoliation"]
+      }
     ],
     "2": [
-      {"name": "CLEAR Daily Skin Clearing Treatment with 2.5% Benzoyl Peroxide", "brand": "Paula's Choice", "product_id": "P469515", "ingredients": ["Benzoyl Peroxide"], "why": "Antibacterial, anti-inflammatory"},
-      {"name": "Azelaic Acid 10% Suspension Brightening Cream", "brand": "The Ordinary", "product_id": "P427411", "ingredients": ["Azelaic Acid"], "why": "Anti-acne, fades post-acne marks"}
+      {
+        "name": "CLEAR Daily Skin Clearing Treatment with 2.5% Benzoyl Peroxide",
+        "short": "2.5% Benzoyl Peroxide",
+        "brand": "Paula's Choice",
+        "product_id": "P469515",
+        "ingredients": ["Benzoyl Peroxide"],
+        "why": "Antibacterial, anti-inflammatory",
+        "concern": "Acne-prone skin",
+        "tags": ["Antibacterial", "Anti-inflammatory"]
+      },
+      {
+        "name": "Azelaic Acid 10% Suspension Brightening Cream",
+        "short": "10% Azelaic Acid Cream",
+        "brand": "The Ordinary",
+        "product_id": "P427411",
+        "ingredients": ["Azelaic Acid"],
+        "why": "Anti-acne, fades post-acne marks",
+        "concern": "Acne-prone skin",
+        "tags": ["Anti-acne", "Brightening"]
+      }
     ],
     "3": [
-      {"name": "5% Benzoyl Peroxide Acne Spot Treatment", "brand": "Dr. Zenovia Skincare", "product_id": "P464241", "ingredients": ["Benzoyl Peroxide"], "why": "Spot treatment — adjunct only, see a dermatologist"}
+      {
+        "name": "5% Benzoyl Peroxide Acne Spot Treatment",
+        "short": "5% Benzoyl Peroxide Spot",
+        "brand": "Dr. Zenovia Skincare",
+        "product_id": "P464241",
+        "ingredients": ["Benzoyl Peroxide"],
+        "why": "Spot treatment — adjunct only, see a dermatologist",
+        "concern": "Acne-prone skin",
+        "tags": ["Spot treatment"]
+      }
     ]
   }
 }

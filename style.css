@@ -519,6 +519,20 @@
     color: var(--ink);
     border-color: var(--gold-soft);
 }
+/* 修复 st.download_button 在 1.36 的 use_container_width 失效：CSS 强制撑满列宽，与 Share/Save 等宽 */
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]):not(:has(.topbar)) [data-testid="stDownloadButton"],
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]):not(:has(.topbar)) [data-testid="stDownloadButton"] button {
+    width: 100% !important;
+}
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]):not(:has(.topbar)) [data-testid="stDownloadButton"] button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]):not(:has(.topbar)) [data-testid="stDownloadButton"] button p {
+    margin: 0;
+    line-height: 1.3;
+}
 
 /* ===== 页脚 ===== */
 .footer {

@@ -220,7 +220,7 @@ def render_why_chain(key: str, products: list[dict]) -> None:
     C = _css()
     label = get_severity_label(key)
     ingredients = " · ".join(get_ingredients(key))
-    product_names = " · ".join(p.get("name", "") for p in products[:2])
+    product_names = " · ".join(p.get("short", p.get("name", "")) for p in products[:2])
     st.markdown(
         f"""
         <div class="{C['why_chain']}">
@@ -243,34 +243,15 @@ def render_recommendation(text: str) -> None:
     st.markdown(f'<div class="{C["reco_card"]}">{html.escape(text)}</div>', unsafe_allow_html=True)
 
 
-def render_product_card(product: dict) -> None:
-    """产品卡：名称在上、品牌·功效在下、成分为标签 chips（对齐设计稿 .prod-card）。"""
+def _digest_html(digest: dict | None) -> str:
+    """生成 Verified Buyer Digest 的 HTML（内嵌进产品卡）。无摘要则返回空串。"""
     C = _css()
-    name = html.escape(product.get("name", ""))
-    brand = html.escape(product.get("brand", ""))
-    why = html.escape(product.get("why", ""))
-    brand_line = brand + (f" · {why}" if why else "")
-    ing_chips = "".join(
-        f'<span class="{C["ing_chip"]}">{html.escape(i)}</span>'
-        for i in product.get("ingredients", [])
-    )
-    st.markdown(
-        f"""
-        <div class="{C['prod_card']}">
-            <div class="{C['prod_name']}">{name}</div>
-            <div class="{C['prod_brand']}">{brand_line}</div>
-            <div class="{C['ing']}">{ing_chips}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-
-def render_digest(digest: dict) -> None:
-    """Verified Buyer Digest：标题 + PRO/CON 药丸 + 行式 PRO+/CON−（对齐设计稿 .rv）。"""
-    C = _css()
+    if not digest:
+        return ""
     pro = digest.get("pro", [])
     con = digest.get("con", [])
+    if not pro and not con:
+        return ""
     rows = ""
     for t in pro:
         rows += (
@@ -282,15 +263,39 @@ def render_digest(digest: dict) -> None:
             f'<div class="{C["row"]}"><span class="{C["mark_neg"]}">CON −</span>'
             f'<span class="{C["txt"]}">{html.escape(t)}</span></div>'
         )
+    return (
+        f'<div class="{C["rv"]}">'
+        f'<div class="{C["rv_head"]}">'
+        f'<span class="{C["vb"]}">VERIFIED BUYER DIGEST</span>'
+        f'<span class="{C["pill"]}">{len(pro)} PRO</span>'
+        f'<span class="{C["pill"]}">{len(con)} CON</span>'
+        f'</div>{rows}</div>'
+    )
+
+
+def render_product_card(product: dict, digest: dict | None = None) -> None:
+    """产品卡：名称 + 品牌·肤质标签·功效 + 成分/功效 chips + 内嵌 Verified Buyer Digest。"""
+    C = _css()
+    name = html.escape(product.get("name", ""))
+    brand = html.escape(product.get("brand", ""))
+    why = html.escape(product.get("why", ""))
+    concern = html.escape(product.get("concern", ""))
+    # 品牌行：品牌 · 肤质标签 · 功效（三段，对齐设计稿 .prod-brand）
+    brand_parts = [p for p in (brand, concern, why) if p]
+    brand_line = " · ".join(brand_parts)
+    # 成分 + 功效 tags（chips）
+    ing_items = list(product.get("ingredients", [])) + list(product.get("tags", []))
+    ing_chips = "".join(
+        f'<span class="{C["ing_chip"]}">{html.escape(i)}</span>'
+        for i in ing_items
+    )
     st.markdown(
         f"""
-        <div class="{C['rv']}">
-            <div class="{C['rv_head']}">
-                <span class="{C['vb']}">VERIFIED BUYER DIGEST</span>
-                <span class="{C['pill']}">{len(pro)} PRO</span>
-                <span class="{C['pill']}">{len(con)} CON</span>
-            </div>
-            {rows}
+        <div class="{C['prod_card']}">
+            <div class="{C['prod_name']}">{name}</div>
+            <div class="{C['prod_brand']}">{brand_line}</div>
+            <div class="{C['ing']}">{ing_chips}</div>
+            {_digest_html(digest)}
         </div>
         """,
         unsafe_allow_html=True,
@@ -361,7 +366,7 @@ def render_feedback() -> None:
         st.markdown(f'<div class="{C["feedback_thanks"]}">We appreciate your feedback</div>', unsafe_allow_html=True)
     else:
         st.markdown("**Was this recommendation useful?**")
-        c1, c2 = st.columns(_layout()["feedback_cols"])
+        c1, c2, _rest = st.columns(_layout()["feedback_cols"])
         with c1:
             st.button("Yes", key="reco_helpful", on_click=_set_feedback, args=("feedback_reco", "helpful"))
         with c2:
@@ -371,7 +376,7 @@ def render_feedback() -> None:
         st.markdown(f'<div class="{C["feedback_thanks"]}">We appreciate your feedback</div>', unsafe_allow_html=True)
     else:
         st.markdown("**Was the review digest useful?**")
-        c1, c2 = st.columns(_layout()["feedback_cols"])
+        c1, c2, _rest = st.columns(_layout()["feedback_cols"])
         with c1:
             st.button("Yes", key="digest_helpful", on_click=_set_feedback, args=("feedback_digest", "helpful"))
         with c2:
@@ -394,7 +399,7 @@ def render_actions(summary_png: bytes) -> None:
             '</div>',
             unsafe_allow_html=True,
         )
-        c1, c2, c3 = st.columns(_layout()["save_cols"])
+        c1, c2, c3 = st.columns(_layout()["save_cols"], vertical_alignment="center")
         with c1:
             st.download_button(
                 copy["buttons"]["download"], summary_png,

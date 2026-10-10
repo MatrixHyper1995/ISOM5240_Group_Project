@@ -68,7 +68,7 @@
   "layout": {
     "photo_cols": [3.2, 1.2],
     "save_cols": 3,
-    "feedback_cols": 2
+    "feedback_cols": [1, 1, 6]
   },
 
   "copy": {
