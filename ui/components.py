@@ -367,9 +367,9 @@ def render_feedback() -> None:
     digest = st.session_state.get("feedback_digest")
 
     # 外层：两 group 自然宽度 + spacer 吸掉右侧多余空间（对齐设计稿 .feedback flex 自然宽度，不撑满）
-    g1, g2, _sp = st.columns([3.3, 3.0, 2.3], vertical_alignment="center")
+    g1, g2, _sp = st.columns([3.4, 3.2, 2.0], vertical_alignment="center")
     with g1:
-        q, b1, b2 = st.columns([2.0, 0.6, 0.55], vertical_alignment="center")
+        q, b1, b2 = st.columns([2.0, 0.6, 0.5], vertical_alignment="center")
         with q:
             st.markdown('<span class="fb-q">Was this recommendation useful?</span>', unsafe_allow_html=True)
         with b1:
@@ -377,7 +377,7 @@ def render_feedback() -> None:
         with b2:
             _fb_button("No", "reco_not", "feedback_reco", "not_helpful", reco)
     with g2:
-        q, b1, b2 = st.columns([1.7, 0.6, 0.55], vertical_alignment="center")
+        q, b1, b2 = st.columns([1.85, 0.6, 0.5], vertical_alignment="center")
         with q:
             st.markdown('<span class="fb-q">Was the review digest useful?</span>', unsafe_allow_html=True)
         with b1:
