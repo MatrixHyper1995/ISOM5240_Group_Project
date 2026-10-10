@@ -346,7 +346,7 @@ def _set_feedback(key: str, value: str) -> None:
 
 
 def render_feedback() -> None:
-    """反馈区：两个问题（推荐 / 评论摘要），回答后该组变感谢语；都答后居中一条。
+    """反馈区：两个问题（推荐 / 评论摘要）横排并排，回答后该组变感谢语；都答后居中一条。
 
     用 st.button + on_click（先写 session_state 再自动 rerun），不回顶；
     不做手搓 JS（st.markdown 注入的 <script> 不会执行）。
@@ -362,25 +362,30 @@ def render_feedback() -> None:
         )
         return
 
-    if reco_done:
-        st.markdown(f'<div class="{C["feedback_thanks"]}">We appreciate your feedback</div>', unsafe_allow_html=True)
-    else:
-        st.markdown("**Was this recommendation useful?**")
-        c1, c2, _rest = st.columns(_layout()["feedback_cols"])
-        with c1:
-            st.button("Yes", key="reco_helpful", on_click=_set_feedback, args=("feedback_reco", "helpful"))
-        with c2:
-            st.button("No", key="reco_not", on_click=_set_feedback, args=("feedback_reco", "not_helpful"))
-
-    if digest_done:
-        st.markdown(f'<div class="{C["feedback_thanks"]}">We appreciate your feedback</div>', unsafe_allow_html=True)
-    else:
-        st.markdown("**Was the review digest useful?**")
-        c1, c2, _rest = st.columns(_layout()["feedback_cols"])
-        with c1:
-            st.button("Yes", key="digest_helpful", on_click=_set_feedback, args=("feedback_digest", "helpful"))
-        with c2:
-            st.button("No", key="digest_not", on_click=_set_feedback, args=("feedback_digest", "not_helpful"))
+    # 两个 group 横排（对齐设计稿 .feedback flex）
+    g1, g2 = st.columns(2)
+    with g1:
+        if reco_done:
+            st.markdown(f'<div class="{C["feedback_thanks"]}">We appreciate your feedback</div>', unsafe_allow_html=True)
+        else:
+            q, b1, b2 = st.columns([2.6, 0.7, 0.7])
+            with q:
+                st.markdown(f'<span class="fb-q">Was this recommendation useful?</span>', unsafe_allow_html=True)
+            with b1:
+                st.button("👍", key="reco_helpful", on_click=_set_feedback, args=("feedback_reco", "helpful"))
+            with b2:
+                st.button("👎", key="reco_not", on_click=_set_feedback, args=("feedback_reco", "not_helpful"))
+    with g2:
+        if digest_done:
+            st.markdown(f'<div class="{C["feedback_thanks"]}">We appreciate your feedback</div>', unsafe_allow_html=True)
+        else:
+            q, b1, b2 = st.columns([2.6, 0.7, 0.7])
+            with q:
+                st.markdown(f'<span class="fb-q">Was the review digest useful?</span>', unsafe_allow_html=True)
+            with b1:
+                st.button("👍", key="digest_helpful", on_click=_set_feedback, args=("feedback_digest", "helpful"))
+            with b2:
+                st.button("👎", key="digest_not", on_click=_set_feedback, args=("feedback_digest", "not_helpful"))
 
 
 def render_actions(summary_png: bytes) -> None:

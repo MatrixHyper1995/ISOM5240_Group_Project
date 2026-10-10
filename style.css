@@ -488,7 +488,7 @@
     border: none;
     border-radius: 0 !important;
     box-shadow: none !important;
-    padding: 26px 28px;
+    padding: 28px 30px;
     margin-top: 26px;
 }
 .actions-head h3 {
@@ -568,6 +568,22 @@
 /* ===== 反馈感谢语 ===== */
 .feedback-thanks { color: var(--muted-strong); font-size: 0.85rem; margin: 6px 0; }
 .feedback-thanks.center { text-align: center; }
+/* 反馈问题文字（对齐设计稿 .feedback span）*/
+.fb-q { font-size: 13.5px; color: var(--muted-strong); }
+/* 反馈 👍/👎 按钮：白底细边框紧凑（对齐设计稿 .fb；深色区 Share 有更具体选择器覆盖）*/
+[data-testid="stButton"] button[kind="secondary"] {
+    background: #fff;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-soft);
+    border-radius: 0;
+    padding: 8px 16px;
+    font-size: 13px;
+    letter-spacing: .04em;
+}
+[data-testid="stButton"] button[kind="secondary"]:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+}
 
 /* 页面背景：象牙白 + 同色细微噪点纹理（Sephora 质感） */
 body,
