@@ -10,7 +10,6 @@ Topbar, hero, section headers, severity bar, result, product card, digest, foote
 """
 import base64
 import html
-import json
 from io import BytesIO
 
 import streamlit as st
@@ -336,91 +335,76 @@ def render_sidebar(demo_mode: bool) -> dict | None:
     }
 
 
+def _set_feedback(key: str, value: str) -> None:
+    """反馈回调：写 session_state（on_click，不显式 rerun，避免回顶）。"""
+    st.session_state[key] = value
+
+
 def render_feedback() -> None:
-    """反馈区：两个问题（推荐 / 评论摘要），手搓 HTML 按钮，JS 事件委托锁定（不依赖 st.button）。"""
-    st.markdown(
-        """
-        <div class="feedback">
-          <div class="feedback-group" data-q="reco">
-            <span>Was this recommendation useful?</span>
-            <button class="fb" type="button">Yes</button>
-            <button class="fb" type="button">No</button>
-          </div>
-          <div class="feedback-group" data-q="digest">
-            <span>Was the review digest useful?</span>
-            <button class="fb" type="button">Yes</button>
-            <button class="fb" type="button">No</button>
-          </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    """反馈区：两个问题（推荐 / 评论摘要），回答后该组变感谢语；都答后居中一条。
+
+    用 st.button + on_click（先写 session_state 再自动 rerun），不回顶；
+    不做手搓 JS（st.markdown 注入的 <script> 不会执行）。
+    """
+    C = _css()
+    reco_done = st.session_state.get("feedback_reco") is not None
+    digest_done = st.session_state.get("feedback_digest") is not None
+
+    if reco_done and digest_done:
+        st.markdown(
+            f'<div class="{C["feedback_thanks"]} {C["center"]}">We appreciate your feedback</div>',
+            unsafe_allow_html=True,
+        )
+        return
+
+    if reco_done:
+        st.markdown(f'<div class="{C["feedback_thanks"]}">We appreciate your feedback</div>', unsafe_allow_html=True)
+    else:
+        st.markdown("**Was this recommendation useful?**")
+        c1, c2 = st.columns(_layout()["feedback_cols"])
+        with c1:
+            st.button("Yes", key="reco_helpful", on_click=_set_feedback, args=("feedback_reco", "helpful"))
+        with c2:
+            st.button("No", key="reco_not", on_click=_set_feedback, args=("feedback_reco", "not_helpful"))
+
+    if digest_done:
+        st.markdown(f'<div class="{C["feedback_thanks"]}">We appreciate your feedback</div>', unsafe_allow_html=True)
+    else:
+        st.markdown("**Was the review digest useful?**")
+        c1, c2 = st.columns(_layout()["feedback_cols"])
+        with c1:
+            st.button("Yes", key="digest_helpful", on_click=_set_feedback, args=("feedback_digest", "helpful"))
+        with c2:
+            st.button("No", key="digest_not", on_click=_set_feedback, args=("feedback_digest", "not_helpful"))
 
 
 def render_actions(summary_png: bytes) -> None:
-    """06 行动区（深色）：下载链接（<a download>）+ 分享/保存按钮（手搓 HTML，替代 st.download_button / st.button）。"""
-    b64 = base64.b64encode(summary_png).decode()
-    copy = _copy()
-    st.markdown(
-        f"""
-        <div class="actions">
-          <h3>{html.escape(copy["save_head"])}</h3>
-          <div class="sub">{html.escape(copy["save_sub"])}</div>
-          <div class="btn-row">
-            <a class="btn-light" download="skin_snapshot.png" href="data:image/png;base64,{b64}">{html.escape(copy["buttons"]["download"])}</a>
-            <button class="btn-light" type="button" data-action="share">{html.escape(copy["buttons"]["share"])}</button>
-            <button class="btn-solid" type="button" data-action="save">{html.escape(copy["buttons"]["save"])}</button>
-          </div>
-          <div class="inline-toast" id="inlineToast"></div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    """06 行动区（深色容器）：下载 PNG + 分享/保存（原生组件，替代手搓 JS）。
 
-
-def inject_interactions_js() -> None:
-    """注入手搓交互 JS：反馈按钮锁定 + 分享/保存内联提示（事件委托，rerun 后仍生效）。"""
+    用 st.container(border=True) + st.download_button + st.button + st.toast；
+    Share/Save 点后 st.toast 同轮显示，不显式 rerun，不回顶。
+    """
+    C = _css()
     copy = _copy()
-    share_js = json.dumps(copy["toast_share"])
-    saved_js = json.dumps(copy["toast_saved"])
-    st.markdown(
-        f"""
-        <script>
-        (function(){{
-          // 反馈按钮：点击后锁定该组（选中高亮 + 未选变淡 + 全部禁用）+ 追加感谢语
-          document.addEventListener('click', function(e){{
-            var b = e.target.closest('.fb');
-            if(!b || b.disabled) return;
-            var g = b.closest('.feedback-group');
-            if(!g) return;
-            var btns = g.querySelectorAll('.fb');
-            btns.forEach(function(x){{
-              x.disabled = true;
-              if(x !== b){{ x.classList.add('dim'); }}
-            }});
-            b.classList.add('active');
-            if(!g.querySelector('.thanks')){{
-              var t = document.createElement('span');
-              t.className = 'thanks';
-              t.textContent = 'We appreciate your feedback';
-              g.appendChild(t);
-            }}
-          }});
-          // 分享 / 保存：点击显示内联提示（替代 st.toast）
-          document.addEventListener('click', function(e){{
-            var btn = e.target.closest('[data-action]');
-            if(!btn) return;
-            var toast = document.getElementById('inlineToast');
-            if(!toast) return;
-            if(btn.getAttribute('data-action') === 'share'){{
-              toast.textContent = {share_js};
-            }} else {{
-              toast.textContent = {saved_js};
-            }}
-            toast.style.display = 'block';
-          }});
-        }})();
-        </script>
-        """,
-        unsafe_allow_html=True,
-    )
+    with st.container(border=True):
+        st.markdown(
+            f'<div class="{C["actions_head"]}">'
+            f'<h3>{copy["save_head"]}</h3>'
+            f'<div class="{C["actions_sub"]}">{copy["save_sub"]}</div>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+        c1, c2, c3 = st.columns(_layout()["save_cols"])
+        with c1:
+            st.download_button(
+                copy["buttons"]["download"], summary_png,
+                file_name="skin_snapshot.png", mime="image/png",
+                use_container_width=True,
+            )
+        with c2:
+            if st.button(copy["buttons"]["share"], use_container_width=True):
+                st.toast(copy["toast_share"])
+        with c3:
+            if st.button(copy["buttons"]["save"], type="primary", use_container_width=True):
+                st.session_state.saved = True
+                st.toast(copy["toast_saved"])

@@ -33,7 +33,6 @@ from ui.components import (
     render_feedback,
     render_actions,
     render_sidebar,
-    inject_interactions_js,
 )
 from ui.card import render_summary_card
 
@@ -53,6 +52,9 @@ def init_state() -> None:
         "products": None,
         "digest": None,
         "file_id": None,
+        "feedback_reco": None,
+        "feedback_digest": None,
+        "saved": False,
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -61,7 +63,7 @@ def init_state() -> None:
 
 def reset_results() -> None:
     """换图后重置旧结果。"""
-    for key in ("severity_key", "severity_label", "confidence", "recommendation", "products", "digest"):
+    for key in ("severity_key", "severity_label", "confidence", "recommendation", "products", "digest", "feedback_reco", "feedback_digest"):
         st.session_state[key] = None
 
 
@@ -94,7 +96,6 @@ def run_recommendation(tone: str, model_id: str | None = None) -> None:
 # ---------------------------------------------------------------------------
 def main() -> None:
     inject_css()
-    inject_interactions_js()
     init_state()
 
     # UI 参数表（单一事实来源）
