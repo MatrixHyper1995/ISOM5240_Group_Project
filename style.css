@@ -574,12 +574,13 @@
 /* 基础：直角紧凑（去掉 Streamlit 默认 min-height 40px / line-height 1.6，对齐设计稿 33px 高）*/
 [data-testid="stHorizontalBlock"]:has(.fb-q) [data-testid="stButton"] button {
     border-radius: 0;
-    padding: 8px 16px;
+    padding: 8px 12px;
     font-size: 13px;
     letter-spacing: .04em;
     min-height: 0;
     height: 33px;
     line-height: 1;
+    white-space: nowrap;
 }
 /* 未答（secondary 可点）：白底细边框 */
 [data-testid="stHorizontalBlock"]:has(.fb-q) [data-testid="stButton"] button[kind="secondary"]:not(:disabled) {
