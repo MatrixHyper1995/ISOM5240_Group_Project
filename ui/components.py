@@ -358,16 +358,13 @@ def render_feedback() -> None:
     """反馈区：两个问题横排，点选后锁定（选中高亮 + 未点调灰 + 整组禁用，不删按钮）。
 
     状态机（对齐设计原稿 v2 / 样本原稿.html）：
-    - 未答：👍/👎 可点（on_click 写 session_state → 自动 rerun）
-    - 已答：该组锁定——选中按钮 primary 高亮、未点按钮 disabled 调灰、不可再改，并追加感谢语
-    - 都答后：两组全锁定，不能再点
+    - 未答：Yes/No 可点（on_click 写 session_state → 自动 rerun）
+    - 已答：该组锁定——选中按钮 primary 高亮、未点按钮 disabled 调灰、不可再改
+    - 都答后：两组全锁定，不能再点（不显示感谢语）
     用 st.button（type/disabled 驱动视觉状态），不用手搓 JS（<script> 不执行）。
     """
-    C = _css()
     reco = st.session_state.get("feedback_reco")
     digest = st.session_state.get("feedback_digest")
-    reco_done = reco is not None
-    digest_done = digest is not None
 
     g1, g2 = st.columns(2)
     with g1:
@@ -375,21 +372,17 @@ def render_feedback() -> None:
         with q:
             st.markdown('<span class="fb-q">Was this recommendation useful?</span>', unsafe_allow_html=True)
         with b1:
-            _fb_button("👍", "reco_helpful", "feedback_reco", "helpful", reco)
+            _fb_button("Yes", "reco_helpful", "feedback_reco", "helpful", reco)
         with b2:
-            _fb_button("👎", "reco_not", "feedback_reco", "not_helpful", reco)
-        if reco_done:
-            st.markdown(f'<div class="{C["feedback_thanks"]}">We appreciate your feedback</div>', unsafe_allow_html=True)
+            _fb_button("No", "reco_not", "feedback_reco", "not_helpful", reco)
     with g2:
         q, b1, b2 = st.columns([2.6, 0.7, 0.7])
         with q:
             st.markdown('<span class="fb-q">Was the review digest useful?</span>', unsafe_allow_html=True)
         with b1:
-            _fb_button("👍", "digest_helpful", "feedback_digest", "helpful", digest)
+            _fb_button("Yes", "digest_helpful", "feedback_digest", "helpful", digest)
         with b2:
-            _fb_button("👎", "digest_not", "feedback_digest", "not_helpful", digest)
-        if digest_done:
-            st.markdown(f'<div class="{C["feedback_thanks"]}">We appreciate your feedback</div>', unsafe_allow_html=True)
+            _fb_button("No", "digest_not", "feedback_digest", "not_helpful", digest)
 
 
 def render_actions(summary_png: bytes) -> None:
