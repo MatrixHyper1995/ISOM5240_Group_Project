@@ -1,6 +1,6 @@
 """
-Sephora Skin Concern Advisor — Review 模型（DistilBERT 评论 PRO/CON 分类）
-DistilBERT review classification (PRO / CON) + verified-buyer curation.
+Sephora Skin Concern Advisor — Review 模型（nlptown multilingual-BERT 评论 PRO/CON 分类）
+nlptown BERT review classification (PRO / CON) + verified-buyer curation.
 """
 import streamlit as st
 from transformers import pipeline

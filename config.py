@@ -8,7 +8,7 @@ app.py 只读配置，改参数不动业务逻辑。
 
 技术栈 / Tech stack: Streamlit + Hugging Face Transformers
   - ViT (image-classification)     痘痘严重度分类
-  - DistilBERT (text-classification) 评论 PRO/CON
+  - nlptown BERT (text-classification) 评论 PRO/CON
   - distilgpt2 (text-generation)   推荐文案续写（失败回退模板）
 """
 from pathlib import Path
@@ -40,7 +40,7 @@ GEN_CANDIDATES = {
 
 # 默认模型 id（demo_mode 关闭 / 未选择时用）
 VISION_MODEL = VISION_CANDIDATES["current (jiefangziyou)"]   # ViT 痘痘严重度分类（现成顶替）
-REVIEW_MODEL = REVIEW_CANDIDATES["distilbert-sst-2"]          # DistilBERT 评论 PRO/CON（SST-2 情感二分类）
+REVIEW_MODEL = REVIEW_CANDIDATES["bert-sentiment"]          # nlptown multilingual-BERT 评论 PRO/CON（1-5 星情感，winner acc 0.956）
 GEN_MODEL    = GEN_CANDIDATES["gpt2-medium"]                  # 推荐文案续写（GPT-2 medium 355M，质量更稳）
 
 # ---------------------------------------------------------------------------
