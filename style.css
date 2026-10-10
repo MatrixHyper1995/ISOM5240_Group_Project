@@ -483,7 +483,7 @@
 .rv .row .txt { color: var(--ink-soft); }
 
 /* ===== 行动区（深色，含下载/分享/保存按钮的 border container，排除顶层 main wrapper） ===== */
-[data-testid="stVerticalBlockBorderWrapper"]:has(.dl-btn):not(:has(.topbar)) {
+[data-testid="stVerticalBlockBorderWrapper"]:has(.actions-head):not(:has(.topbar)) {
     background: var(--ink);
     border: none;
     border-radius: 0 !important;
@@ -504,7 +504,7 @@
     color: var(--gold-soft);
 }
 /* 深色区内三按钮统一高度 40px、撑满列宽、垂直居中 */
-[data-testid="stVerticalBlockBorderWrapper"]:has(.dl-btn):not(:has(.topbar)) [data-testid="stButton"] button {
+[data-testid="stVerticalBlockBorderWrapper"]:has(.actions-head):not(:has(.topbar)) [data-testid="stButton"] button {
     width: 100%;
     height: 40px;
     display: flex;
@@ -516,20 +516,20 @@
     font-weight: 600;
 }
 /* 次要按钮（Download <a> + Share 按钮）→ 透明底白字金边 */
-[data-testid="stVerticalBlockBorderWrapper"]:has(.dl-btn):not(:has(.topbar)) .dl-btn,
-[data-testid="stVerticalBlockBorderWrapper"]:has(.dl-btn):not(:has(.topbar)) [data-testid="stButton"] button[kind="secondary"] {
+[data-testid="stVerticalBlockBorderWrapper"]:has(.actions-head):not(:has(.topbar)) .dl-btn,
+[data-testid="stVerticalBlockBorderWrapper"]:has(.actions-head):not(:has(.topbar)) [data-testid="stButton"] button[kind="secondary"] {
     background: transparent;
     border: 1px solid var(--gold-soft);
     color: #fff;
 }
-[data-testid="stVerticalBlockBorderWrapper"]:has(.dl-btn):not(:has(.topbar)) .dl-btn:hover,
-[data-testid="stVerticalBlockBorderWrapper"]:has(.dl-btn):not(:has(.topbar)) [data-testid="stButton"] button[kind="secondary"]:hover {
+[data-testid="stVerticalBlockBorderWrapper"]:has(.actions-head):not(:has(.topbar)) .dl-btn:hover,
+[data-testid="stVerticalBlockBorderWrapper"]:has(.actions-head):not(:has(.topbar)) [data-testid="stButton"] button[kind="secondary"]:hover {
     background: var(--gold-soft);
     color: var(--ink);
     border-color: var(--gold-soft);
 }
 /* 原生 <a download> 链接：撑满列宽、与按钮等高等宽（绕开 st.download_button 的 use_container_width bug） */
-[data-testid="stVerticalBlockBorderWrapper"]:has(.dl-btn):not(:has(.topbar)) .dl-btn {
+[data-testid="stVerticalBlockBorderWrapper"]:has(.actions-head):not(:has(.topbar)) .dl-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -545,7 +545,7 @@
     box-sizing: border-box;
     line-height: 1.3;
 }
-[data-testid="stVerticalBlockBorderWrapper"]:has(.dl-btn):not(:has(.topbar)) .dl-btn:hover {
+[data-testid="stVerticalBlockBorderWrapper"]:has(.actions-head):not(:has(.topbar)) .dl-btn:hover {
     text-decoration: none;
 }
 
