@@ -384,13 +384,16 @@ def render_feedback() -> None:
 
 
 def render_actions(summary_png: bytes) -> None:
-    """06 行动区（深色容器）：下载 PNG + 分享/保存（原生组件，替代手搓 JS）。
+    """06 行动区（深色容器）：下载 PNG（原生 <a download>）+ 分享/保存（原生组件）。
 
-    用 st.container(border=True) + st.download_button + st.button + st.toast；
-    Share/Save 点后 st.toast 同轮显示，不显式 rerun，不回顶。
+    Download 用原生 <a download> 而非 st.download_button：后者在 Streamlit 1.36
+    的 use_container_width 失效（wrapper 固定内容宽 204px，且整条父链 flex 收缩，
+    CSS/内联均无法覆盖）。<a download> 是浏览器原生下载，无需 JS，
+    CSS width:100% 直接生效，与 Share/Save 等宽。
     """
     C = _css()
     copy = _copy()
+    b64 = base64.b64encode(summary_png).decode()
     with st.container(border=True):
         st.markdown(
             f'<div class="{C["actions_head"]}">'
@@ -401,10 +404,10 @@ def render_actions(summary_png: bytes) -> None:
         )
         c1, c2, c3 = st.columns(_layout()["save_cols"], vertical_alignment="center")
         with c1:
-            st.download_button(
-                copy["buttons"]["download"], summary_png,
-                file_name="skin_snapshot.png", mime="image/png",
-                use_container_width=True,
+            st.markdown(
+                f'<a class="dl-btn" download="skin_snapshot.png" '
+                f'href="data:image/png;base64,{b64}">{html.escape(copy["buttons"]["download"])}</a>',
+                unsafe_allow_html=True,
             )
         with c2:
             if st.button(copy["buttons"]["share"], use_container_width=True):
