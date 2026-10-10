@@ -570,13 +570,15 @@
 .feedback-thanks.center { text-align: center; }
 /* 反馈问题文字（对齐设计稿 .feedback span）*/
 .fb-q { font-size: 13.5px; color: var(--muted-strong); }
-/* 反馈 👍/👎 按钮状态机（对齐样本原稿 .fb.active / .fb.dim / .fb:disabled）*/
-/* 基础：直角紧凑 */
+/* 反馈 Yes/No 按钮状态机（对齐样本原稿 .fb.active / .fb.dim / .fb:disabled）*/
+/* 基础：直角紧凑（去掉 Streamlit 默认 min-height 40px / line-height 1.6，对齐设计稿 33px 高）*/
 [data-testid="stHorizontalBlock"]:has(.fb-q) [data-testid="stButton"] button {
     border-radius: 0;
     padding: 8px 16px;
     font-size: 13px;
     letter-spacing: .04em;
+    min-height: 0;
+    line-height: 1.2;
 }
 /* 未答（secondary 可点）：白底细边框 */
 [data-testid="stHorizontalBlock"]:has(.fb-q) [data-testid="stButton"] button[kind="secondary"]:not(:disabled) {
