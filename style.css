@@ -342,8 +342,9 @@
 }
 
 /* ===== 推荐 ===== */
-/* 04 RECOMMENDATION 外层卡片（对齐设计稿 .reco：白底 + 金色左边框，全直角） */
-[data-testid="stVerticalBlockBorderWrapper"] {
+/* 04 RECOMMENDATION 外层卡片（对齐设计稿 .reco：白底 + 金色左边框，全直角）
+   只匹配含 .why-chain 的 container，且排除顶层 main wrapper（它含 .topbar） */
+[data-testid="stVerticalBlockBorderWrapper"]:has(.why-chain):not(:has(.topbar)) {
     background: var(--paper);
     border: 1px solid var(--line-strong);
     border-left: 3px solid var(--gold);
@@ -481,8 +482,8 @@
 .rv .neg { color: var(--ink-soft); }
 .rv .row .txt { color: var(--ink-soft); }
 
-/* ===== 行动区（深色，含下载/分享/保存按钮的 border container） ===== */
-[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]) {
+/* ===== 行动区（深色，含下载/分享/保存按钮的 border container，排除顶层 main wrapper） ===== */
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]):not(:has(.topbar)) {
     background: var(--ink);
     border: none;
     border-radius: 0 !important;
@@ -503,8 +504,8 @@
     color: var(--gold-soft);
 }
 /* 深色区内次要按钮（Download 下载按钮 + Share 按钮）→ 透明底白字金边 */
-[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]) [data-testid="stDownloadButton"] button,
-[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]) [data-testid="stButton"] button[kind="secondary"] {
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]):not(:has(.topbar)) [data-testid="stDownloadButton"] button,
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]):not(:has(.topbar)) [data-testid="stButton"] button[kind="secondary"] {
     background: transparent;
     border: 1px solid var(--gold-soft);
     color: #fff;
@@ -512,8 +513,8 @@
     letter-spacing: .08em;
     font-weight: 600;
 }
-[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]) [data-testid="stDownloadButton"] button:hover,
-[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]) [data-testid="stButton"] button[kind="secondary"]:hover {
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]):not(:has(.topbar)) [data-testid="stDownloadButton"] button:hover,
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stDownloadButton"]):not(:has(.topbar)) [data-testid="stButton"] button[kind="secondary"]:hover {
     background: var(--gold-soft);
     color: var(--ink);
     border-color: var(--gold-soft);
