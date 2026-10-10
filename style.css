@@ -578,7 +578,8 @@
     font-size: 13px;
     letter-spacing: .04em;
     min-height: 0;
-    line-height: 1.2;
+    height: 33px;
+    line-height: 1;
 }
 /* 未答（secondary 可点）：白底细边框 */
 [data-testid="stHorizontalBlock"]:has(.fb-q) [data-testid="stButton"] button[kind="secondary"]:not(:disabled) {
