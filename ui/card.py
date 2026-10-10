@@ -6,6 +6,7 @@ Summary card generator (Pillow): 生成「我的肤质快照」分享卡，可�
 米白底 + 衬线标题 + 直角 + 色弱友好（明暗不靠红绿）。
 """
 import io
+from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -21,11 +22,14 @@ BAR_ON = "#1A1A1A"        # 分段条点亮（深，明暗区分）
 
 W, PAD = 1080, 72
 
-# 字体候选（Georgia 衬线 → Linux DejaVu → 默认）
-_SERIF = ["/mnt/c/Windows/Fonts/Georgia.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"]
-_SERIF_BOLD = ["/mnt/c/Windows/Fonts/georgiab.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"]
-_SANS = ["/mnt/c/Windows/Fonts/arial.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"]
-_SANS_BOLD = ["/mnt/c/Windows/Fonts/arialbd.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"]
+# 字体候选（仓库内 fonts/ 优先 → Windows → DejaVu → 默认）
+# 仓库内打包字体：Cloud（纯 Linux）没有 /mnt/c/Windows/Fonts，也没有系统 DejaVu，
+# 若不打包会回退到 load_default 位图小字体（忽略 size），导致标题变小 + 大片空白。
+_FONTS = Path(__file__).resolve().parent.parent / "fonts"
+_SERIF = [str(_FONTS / "DejaVuSerif.ttf"), "/mnt/c/Windows/Fonts/Georgia.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"]
+_SERIF_BOLD = [str(_FONTS / "DejaVuSerif-Bold.ttf"), "/mnt/c/Windows/Fonts/georgiab.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"]
+_SANS = [str(_FONTS / "DejaVuSans.ttf"), "/mnt/c/Windows/Fonts/arial.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"]
+_SANS_BOLD = [str(_FONTS / "DejaVuSans-Bold.ttf"), "/mnt/c/Windows/Fonts/arialbd.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"]
 
 
 def _load_font(size: int, style: str = "sans"):

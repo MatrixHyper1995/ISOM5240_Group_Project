@@ -570,19 +570,35 @@
 .feedback-thanks.center { text-align: center; }
 /* 反馈问题文字（对齐设计稿 .feedback span）*/
 .fb-q { font-size: 13.5px; color: var(--muted-strong); }
-/* 反馈 👍/👎 按钮：白底细边框紧凑（对齐设计稿 .fb；深色区 Share 有更具体选择器覆盖）*/
-[data-testid="stButton"] button[kind="secondary"] {
-    background: #fff;
-    border: 1px solid var(--line-strong);
-    color: var(--ink-soft);
+/* 反馈 👍/👎 按钮状态机（对齐样本原稿 .fb.active / .fb.dim / .fb:disabled）*/
+/* 基础：直角紧凑 */
+[data-testid="stHorizontalBlock"]:has(.fb-q) [data-testid="stButton"] button {
     border-radius: 0;
     padding: 8px 16px;
     font-size: 13px;
     letter-spacing: .04em;
 }
-[data-testid="stButton"] button[kind="secondary"]:hover {
+/* 未答（secondary 可点）：白底细边框 */
+[data-testid="stHorizontalBlock"]:has(.fb-q) [data-testid="stButton"] button[kind="secondary"]:not(:disabled) {
+    background: #fff;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-soft);
+}
+[data-testid="stHorizontalBlock"]:has(.fb-q) [data-testid="stButton"] button[kind="secondary"]:not(:disabled):hover {
     border-color: var(--ink);
     color: var(--ink);
+}
+/* 选中（primary disabled）：黑底白字高亮（对齐 .fb.active）*/
+[data-testid="stHorizontalBlock"]:has(.fb-q) [data-testid="stButton"] button[kind="primary"]:disabled {
+    background: var(--ink) !important;
+    border-color: var(--ink) !important;
+    color: #fff !important;
+    opacity: 1 !important;
+}
+/* 未选（secondary disabled）：调灰（对齐 .fb.dim，opacity .35）*/
+[data-testid="stHorizontalBlock"]:has(.fb-q) [data-testid="stButton"] button[kind="secondary"]:disabled {
+    opacity: .35;
+    cursor: not-allowed;
 }
 
 /* 页面背景：象牙白 + 同色细微噪点纹理（Sephora 质感） */
