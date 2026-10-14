@@ -6,13 +6,22 @@ import streamlit as st
 from transformers import pipeline
 
 import config
-from utils import load_reviews
+from utils import load_reviews, quantize_model
 
 
 @st.cache_resource
 def load_review(model_id: str):
     """加载并缓存文本分类模型（按 model_id 缓存）。"""
-    return pipeline("text-classification", model=model_id)
+    if not config.ENABLE_QUANTIZATION:
+        return pipeline("text-classification", model=model_id)
+    from transformers import AutoModelForSequenceClassification, AutoTokenizer
+    model = AutoModelForSequenceClassification.from_pretrained(model_id)
+    model = quantize_model(model)
+    return pipeline(
+        "text-classification",
+        model=model,
+        tokenizer=AutoTokenizer.from_pretrained(model_id),
+    )
 
 
 def _normalize_label(raw_label: str) -> str:
@@ -76,11 +85,12 @@ def load_and_curate(product_names: list[str], model_id: str | None = None) -> di
     return curate_reviews(texts, model_id=model_id)
 
 
-def curate_per_product(product_names: list[str], model_id: str | None = None) -> dict[str, dict]:
-    """按产品分发：一次批量推理，返回 {product_name: {"pro": [...], "con": [...]}}。
+@st.cache_data(show_spinner=False)
+def _curate_per_product_cached(product_names: tuple, model_id: str) -> dict[str, dict]:
+    """按产品分发的 PRO/CON 摘要（结果按 (product_names, model_id) 缓存）。
 
-    每个产品卡内嵌自己的 Verified Buyer Digest（对齐设计稿 05 区）——
-    产品 1 卡里是产品 1 的 PRO/CON，产品 2 卡里是产品 2 的，不再混成一份。
+    同一档位 → 同一批产品 → 同一份摘要，第二次 Analyze 直接命中缓存，
+    省掉最重的 review 批量推理。
     """
     result = {name: {"pro": [], "con": []} for name in product_names}
     reviews = load_reviews()
@@ -92,7 +102,6 @@ def curate_per_product(product_names: list[str], model_id: str | None = None) ->
     if "product_name" not in df.columns or not product_names:
         return result
     df = df[df["product_name"].isin(product_names)]
-    model_id = model_id or config.REVIEW_MODEL
 
     # 每个产品最多 50 条，合并后一次批量推理（避免逐产品反复加载模型）
     texts_by_name = {}
@@ -125,3 +134,9 @@ def curate_per_product(product_names: list[str], model_id: str | None = None) ->
             "con": [t for t, _ in con_by_name[name][:config.CON_TOP_K]],
         }
     return result
+
+
+def curate_per_product(product_names: list[str], model_id: str | None = None) -> dict[str, dict]:
+    """薄壳：解析 model_id，转 tuple 作为缓存 key，调用缓存版。"""
+    model_id = model_id or config.REVIEW_MODEL
+    return _curate_per_product_cached(tuple(product_names), model_id)

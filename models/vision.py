@@ -12,13 +12,22 @@ from PIL import Image
 from transformers import pipeline
 
 import config
-from utils import load_bridge
+from utils import load_bridge, quantize_model
 
 
 @st.cache_resource
 def load_vision(model_id: str):
     """加载并缓存 ViT 图像分类模型（按 model_id 缓存，切模型不重复加载）。"""
-    return pipeline("image-classification", model=model_id)
+    if not config.ENABLE_QUANTIZATION:
+        return pipeline("image-classification", model=model_id)
+    from transformers import AutoModelForImageClassification, AutoImageProcessor
+    model = AutoModelForImageClassification.from_pretrained(model_id)
+    model = quantize_model(model)
+    return pipeline(
+        "image-classification",
+        model=model,
+        image_processor=AutoImageProcessor.from_pretrained(model_id),
+    )
 
 
 def release_vision() -> None:

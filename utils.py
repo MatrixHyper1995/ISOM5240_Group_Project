@@ -74,6 +74,21 @@ def load_reviews():
     return pd.read_csv(path)
 
 
+def quantize_model(model):
+    """int8 动态量化（仅 Linear 层）；失败返回原模型，不阻断流程。
+
+    CPU 上对 transformer 的 Linear 层做 int8 动态量化：权重内存减半、推理略快，
+    精度损失通常 <1%（分类）/ 2-5%（生成）。仅当 config.ENABLE_QUANTIZATION 为 True 时调用。
+    """
+    try:
+        import torch
+        return torch.quantization.quantize_dynamic(
+            model, {torch.nn.Linear}, dtype=torch.qint8
+        )
+    except Exception:
+        return model
+
+
 # ---------------------------------------------------------------------------
 # 映射查询 / Mapping lookup
 # ---------------------------------------------------------------------------

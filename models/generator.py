@@ -11,13 +11,22 @@ import streamlit as st
 from transformers import pipeline
 
 import config
-from utils import get_ingredients, get_opener, get_severity_label, format_opener
+from utils import get_ingredients, get_opener, get_severity_label, format_opener, quantize_model
 
 
 @st.cache_resource
 def load_generator(model_id: str):
     """加载并缓存 text-generation 模型（按 model_id 缓存）。"""
-    return pipeline("text-generation", model=model_id)
+    if not config.ENABLE_QUANTIZATION:
+        return pipeline("text-generation", model=model_id)
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    model = AutoModelForCausalLM.from_pretrained(model_id)
+    model = quantize_model(model)
+    return pipeline(
+        "text-generation",
+        model=model,
+        tokenizer=AutoTokenizer.from_pretrained(model_id),
+    )
 
 
 def release_generator() -> None:
