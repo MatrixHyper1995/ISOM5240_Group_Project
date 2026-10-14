@@ -175,34 +175,37 @@ def main() -> None:
             if st.session_state.recommendation:
                 render_recommendation(st.session_state.recommendation)
 
-        # 05 MATCHED PRODUCTS
-        render_section(SEC["05"]["idx"], SEC["05"]["title"], SEC["05"]["hint"])
+        # 05~06 推荐阶段：产品 + 评论摘要 + 保存，随推荐语一起在点 Generate 后展示
+        # （Analyze 只出脸部分析结果；产品推荐和评论摘要等 Generate 才生成）
+        if st.session_state.recommendation is not None:
+            # 05 MATCHED PRODUCTS
+            render_section(SEC["05"]["idx"], SEC["05"]["title"], SEC["05"]["hint"])
 
-        # 评论摘要：按产品分发，每个产品卡内嵌自己的 Verified Buyer Digest
-        if st.session_state.digests is None and products:
-            try:
-                st.session_state.digests = curate_per_product([p["name"] for p in products], model_id=review_model)
-            except Exception:
-                st.session_state.digests = {p["name"]: {"pro": [], "con": []} for p in products}
-        digests = st.session_state.digests or {}
+            # 评论摘要：按产品分发，每个产品卡内嵌自己的 Verified Buyer Digest
+            if st.session_state.digests is None and products:
+                try:
+                    st.session_state.digests = curate_per_product([p["name"] for p in products], model_id=review_model)
+                except Exception:
+                    st.session_state.digests = {p["name"]: {"pro": [], "con": []} for p in products}
+            digests = st.session_state.digests or {}
 
-        for product in products:
-            render_product_card(product, digests.get(product["name"]))
+            for product in products:
+                render_product_card(product, digests.get(product["name"]))
 
-        # 06 SAVE · SHARE · FEEDBACK
-        render_section(SEC["06"]["idx"], SEC["06"]["title"], SEC["06"]["hint"])
-        card = render_summary_card(
-            key,
-            st.session_state.severity_label,
-            st.session_state.confidence,
-            st.session_state.recommendation,
-            products,
-            cells=CELLS,
-        )
-        render_actions(card)  # 手搓：<a download> + 分享/保存按钮 + 内联提示
+            # 06 SAVE · SHARE · FEEDBACK
+            render_section(SEC["06"]["idx"], SEC["06"]["title"], SEC["06"]["hint"])
+            card = render_summary_card(
+                key,
+                st.session_state.severity_label,
+                st.session_state.confidence,
+                st.session_state.recommendation,
+                products,
+                cells=CELLS,
+            )
+            render_actions(card)  # 手搓：<a download> + 分享/保存按钮 + 内联提示
 
-        # 反馈：两个问题，手搓 HTML 按钮 + JS 锁定（不依赖 st.button / session_state）
-        render_feedback()
+            # 反馈：两个问题，手搓 HTML 按钮 + JS 锁定（不依赖 st.button / session_state）
+            render_feedback()
 
     # 页脚
     render_footer()
