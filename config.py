@@ -41,7 +41,7 @@ GEN_CANDIDATES = {
 # 默认模型 id（demo_mode 关闭 / 未选择时用）
 VISION_MODEL = VISION_CANDIDATES["current (jiefangziyou)"]   # ViT 痘痘严重度分类（现成顶替）
 REVIEW_MODEL = REVIEW_CANDIDATES["bert-sentiment"]          # nlptown multilingual-BERT 评论 PRO/CON（1-5 星情感，winner acc 0.956）
-GEN_MODEL    = GEN_CANDIDATES["gpt2-medium"]                  # 推荐文案续写（GPT-2 medium 355M，质量更稳）
+GEN_MODEL    = GEN_CANDIDATES["distilgpt2"]                   # 推荐文案续写（distilgpt2 82M，轻量；Streamlit Cloud 1GB 内存可跑）
 
 # ---------------------------------------------------------------------------
 # 阈值与限制 / Thresholds & limits
@@ -56,7 +56,7 @@ ALLOWED_TYPES      = ["png", "jpg", "jpeg", "bmp"]
 # 开关 / Switches
 # ---------------------------------------------------------------------------
 ENABLE_TEXT_GEN = True       # text-gen 开关；False 或加载失败 → 模板回退 / text-gen switch
-ENABLE_QUANTIZATION = True   # int8 动态量化开关；True = 权重内存减半、CPU 推理略快，精度轻微损失（分类<1%、生成2-5%）
+ENABLE_QUANTIZATION = False  # int8 动态量化开关；gpt2-medium 量化需先加载 fp32 再转 int8（峰值反超 1GB），暂关——串行化 + distilgpt2 已把峰值压到 ~700MB，量化非必需
 
 # 评论摘要条数 / review digest counts
 PRO_TOP_K = 3                # 每产品 PRO 摘要条数 / PRO digests per product
