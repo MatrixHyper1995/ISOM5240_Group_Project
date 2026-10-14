@@ -56,7 +56,7 @@ ALLOWED_TYPES      = ["png", "jpg", "jpeg", "bmp"]
 # 开关 / Switches
 # ---------------------------------------------------------------------------
 ENABLE_TEXT_GEN = True       # text-gen 开关；False 或加载失败 → 模板回退 / text-gen switch
-ENABLE_QUANTIZATION = False  # int8 动态量化开关；True = 权重内存减半、CPU 推理略快，精度轻微损失（分类<1%、生成2-5%）
+ENABLE_QUANTIZATION = True   # int8 动态量化开关；True = 权重内存减半、CPU 推理略快，精度轻微损失（分类<1%、生成2-5%）
 
 # 评论摘要条数 / review digest counts
 PRO_TOP_K = 3                # 每产品 PRO 摘要条数 / PRO digests per product
